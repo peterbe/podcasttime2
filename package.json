@@ -1,0 +1,23 @@
+{
+  "name": "podcasttime2",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "react-scripts": "0.8.1"
+  },
+  "dependencies": {
+    "director": "1.2.8",
+    "mobx": "^.6.4",
+    "mobx-react": "4.0.3",
+    "mobx-router": "0.0.7",
+    "react": "15.4.1",
+    "react-dom": "15.4.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "proxy": "http://peterbecom.dev"
+}
