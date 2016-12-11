@@ -1,0 +1,52 @@
+.ac-wrapper {
+    position: relative;
+}
+
+.ac-results {
+    position: absolute;
+    z-index: 2;
+    background-color: white;
+    opacity: 0.96;
+    max-height: 500px;
+    overflow: auto;
+    margin-top: 54px;
+    width: 100%;
+    border-left: 1px solid rgba(34, 36, 38, 0.15);
+    border-right: 1px solid rgba(34, 36, 38, 0.15);
+    border-bottom: 1px solid rgba(34, 36, 38, 0.15);
+}
+
+.ac-results .searching .image {
+    float: left;
+}
+.ac-results .searching p {
+    margin-left: 70px;
+    padding-top: 13px;
+    color: #999;
+}
+
+.ac-result {
+    padding: 6px;
+}
+
+.ac-result.active {
+    background-color: #efefef;
+}
+
+.ac-result:hover {
+    cursor: pointer;
+    background-color: #efefef;
+}
+
+.ac-result .image {
+    float: left;
+    margin-right: 10px;
+}
+
+.ac-result .image img {
+    width: 60px;
+}
+
+.ac-result p {
+    font-size: 13px;
+}

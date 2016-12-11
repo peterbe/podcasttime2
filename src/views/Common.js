@@ -1,4 +1,5 @@
 import React from 'react';
+import './ripple.css'
 
 export const Ripple = ({ scale = '2' }) => {
   // Generated on http://loading.io/
@@ -57,21 +58,18 @@ export const FormattedDuration = ({ seconds }) => {
   return <span>{ millisecondsToStr(seconds * 1000) }</span>
 }
 
-export const FormattedNumber = ({ number }) => {
-  // XXX format this
-  console.log('NUMBER', number);
-  return number
+export function equalArrays(arr1, arr2) {
+  return (
+    arr1.length === arr2.length &&
+    arr1.every((x, i) => arr2[i] === x)
+  )
 }
 
-export const FormattedDate = ({ value }) => {
-  // XXX format this
-  console.log('DATE', value);
-  return value
-}
 
-export const FormattedRelative = ({ seconds }) => {
-  // XXX format this
-  console.log('RELATIVE?', seconds);
-  return seconds
-
+export function updateDocumentTitle(title) {
+  if (!title) {
+    document.title = 'PodcastTime - How Much Time Do Your Podcasts Take To Listen To?'
+  } else {
+    document.title = `${title} - PodcastTime`
+  }
 }

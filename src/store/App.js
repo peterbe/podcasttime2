@@ -4,26 +4,42 @@ class AppStore {
   constructor() {
     extendObservable(this, {
       title: 'PodcastTime',
+
+      isSearching: false,
+      search: '',
+      searchResults: null,
+      searchHighlight: -1,
+      picked: [],
+      pickedStats: null,
+
+      pendingPodcasts: [],
+
       picks: null,
       isFetching: false,
       page: 1,
       podcast: null,
-      // user: undefined
-    });
+      podcasts: null,
+      podcastsSearch: null,
+    })
   }
 
   setTitle = action(title => {
     this.title = title;
   })
 
-  setPicks = action(picks => {
+  setPicks = action((picks, page) => {
     this.picks = picks
+    this.page = page
   })
 
   setPodcast = action(podcast => {
     this.podcast = podcast
   })
-  // setPage = action(page => this.page = page)
+
+  setPodcasts = action((podcasts, page) => {
+    this.podcasts = podcasts
+    this.page = page
+  })
 }
 
 export default AppStore

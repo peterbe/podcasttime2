@@ -2,23 +2,18 @@ import React, {Component} from 'react';
 import {observer, inject} from 'mobx-react';
 import {Link} from 'mobx-router';
 import views from '../views';
+import { updateDocumentTitle } from './Common'
+import './picks.css'
+
 
 class Picks extends Component {
   render() {
 
     const {store} = this.props;
     const { picks, isFetching, page } = store.app
-    // const {router: {goTo}} = store;
-
-    // console.log("STORE.PICKS", picks);
-    // if (picks) {
-    //   console.log("  ITEMS", picks.items);
-    //   // console.log("  PAGE", picks.page);
-    //   console.log("  PAGINATION", picks.pagination);
-    // }
 
     let items = null
-    if (!isFetching) {
+    if (!isFetching && picks) {
       items = (
         <div>
           { picks.items.map(pick => {
@@ -32,7 +27,7 @@ class Picks extends Component {
       )
     }
 
-    // updateDocumentTitle("Picks")XXX
+    updateDocumentTitle('Picks')
     return (
       <div className="ui container">
         <h3> Picks - Page {page}</h3>
@@ -40,63 +35,19 @@ class Picks extends Component {
         { isFetching ? <h4>Fetching...</h4> : null }
 
         { items }
-        {/* <Link view={views.gallery} store={store}> Go to gallery </Link>
-
-        <br/>
-        <br/>
-        <Link view={views.gallery} store={store} queryParams={{start: 5}}>
-          Go to gallery and start from 5th image
-        </Link>
-
-        <br/>
-        <br/>
-
-        <Link view={views.document} params={{id: 456}} title="Go to document 456" store={store}/>
-
-        <br/>
-        <br/>
-
-        <Link view={views.document} params={{id: 999}} store={store}>
-          <div style={{display: 'inline-block'}}>
-            Go to document <b> 999 </b>
-          </div>
-        </Link>
-
-        <br/>
-        <br/>
-
-        <button onClick={() => goTo(views.document, {id: 123}, store)}> Go to document 123</button>
-
-        <br/>
-        <br/>
-
-        <Link view={views.book} params={{id: 250, page: 130}} title="Go to book 250, page 130" store={store}/>
-
-        <br/>
-        <br/>
-
-        <button onClick={() => goTo(views.userProfile, {username: 'kitze', tab: 'articles'}, store)}>
-          go to user kitze
-        </button> */}
-
       </div>
     );
   }
 }
 
-// export default observer(['store'], Picks);
-// export default inject('store',)(observer(Picks))
 export default inject('store')(observer(Picks))
 
 
 
-
 const Pick = ({ pick, store }) => {
-  // XXX stop using style tags
   return (
     <div
-      className="ui eight cards segment"
-      style={{marginBottom:5}}>
+      className="ui eight cards segment">
       {
         pick.podcasts.map(podcast => {
           return <Podcast
@@ -110,7 +61,6 @@ const Pick = ({ pick, store }) => {
 }
 
 const Podcast = ({podcast, store}) => {
-  // let linkURL = `/podcasts/${podcast.id}/${podcast.slug}` XXX
   return (
     <div
       className="ui centered card"

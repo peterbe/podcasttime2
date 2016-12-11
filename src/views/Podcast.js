@@ -4,30 +4,51 @@ import {Link} from 'mobx-router';
 import views from '../views';
 import {
   RippleCentered,
-  FormattedNumber,
   FormattedDuration,
-  FormattedDate,
-  FormattedRelative,
  } from './Common'
+import {
+  FormattedRelative,
+  FormattedDate,
+  FormattedNumber,
+} from 'react-intl'
 
 
 class Podcast extends Component {
+  constructor(props) {
+    super(props)
+    this.onAddThis = this.onAddThis.bind(this)
+  }
+
+  onAddThis(event) {
+    event.preventDefault()
+    const { store } = this.props
+    let ids = store.app.picked.map(p => p.id)
+    if (!ids.includes(store.app.podcast.id)) {
+      ids.push(store.app.podcast.id)
+    }
+    ids = ids.sort()
+    store.router.goTo(
+      views.home_found,
+      {ids: ids.join('-')},
+      store,
+    )
+  }
+
   render() {
 
     const { store } = this.props;
     const { podcast, isFetching } = store.app
 
-    // updateDocumentTitle(XXX)
     return (
       <div className="ui container">
 
         { isFetching ? <RippleCentered scale={2}/> : null }
         { podcast ?
           <div>
-            <h1>{ podcast.name }</h1>
             <AddLinks
               store={store}
               id={podcast.id}
+              onAddThis={this.onAddThis}
               />
             <Metadata
               {...podcast}
@@ -46,22 +67,18 @@ class Podcast extends Component {
   }
 }
 
-// export default observer(['store'], Home);
 export default inject('store',)(observer(Podcast))
 
 
-const AddLinks = ({ id, store }) => {
+const AddLinks = ({ id, store, onAddThis }) => {
   return (
     <div className="ui container">
-      <Link
+      <a
         className="ui button primary"
-        view={views.add}
-        params={{id: id}}
-        to={`/add/${id}`}
-        store={store}
+        onClick={onAddThis}
       >
         I listen to this!
-      </Link>
+      </a>
       <Link
         className="ui button"
         view={views.home}
@@ -97,7 +114,7 @@ const Metadata = ({
           src="/static/images/no-image.png"
           width="300" height="300"/>
       }
-      {/* <div style={{marginLeft: 330}}>
+      <div style={{marginLeft: 330}}>
         <h2>Title: { name }</h2>
         <h3>
           Number of episodes:{' '}
@@ -117,13 +134,12 @@ const Metadata = ({
             <FormattedRelative value={modified}/>
           }
         </h3>
-      </div> */}
+      </div>
     </div>
   )
 }
 
 const Episodes = ({ episodes }) => {
-  // console.log('episodes', episodes);
   return (
     <table className="ui celled table">
       <thead>
@@ -144,10 +160,6 @@ const Episodes = ({ episodes }) => {
 }
 
 const EpisodeRow = ({ episode }) => {
-  console.log('EISODE', episode, episode);
-  console.log("FORMATTED", <FormattedDate value={episode.published}/>);
-  console.log("RELATIVE", <FormattedRelative value={episode.published} />);
-  console.log("DURATION", <FormattedDuration seconds={episode.duration} />);
   return (
     <tr>
       <td>

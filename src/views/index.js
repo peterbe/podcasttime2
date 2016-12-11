@@ -7,21 +7,63 @@ import {Route} from 'mobx-router'
 import Home from './Home'
 import Picks from './Picks'
 import Podcast from './Podcast'
-// import Document from 'components/Document';
-// import Gallery from 'components/Gallery';
-// import Book from 'components/Book';
-// import UserProfile from 'components/UserProfile';
+import Podcasts from './Podcasts'
+
+//misc
+import {
+  equalArrays,
+  updateDocumentTitle,
+} from './Common'
+
 
 const views = {
   home: new Route({
     path: '/',
-    component: <Home/>
+    component: <Home/>,
+    onEnter: (route, params, store, queryParams) => {
+      updateDocumentTitle(null)
+      store.app.picked = []
+      store.app.pickedStats = null
+      store.app.searchResults = []
+      store.app.searchHighlight = -1
+    }
+  }),
+  home_found: new Route({
+    path: '/found/:ids',
+    component: <Home/>,
+    onEnter: (route, params, store, queryParams) => {
+      if (params.ids) {
+        let ids = params.ids.split('-').sort()
+        updateDocumentTitle(`${ids.length} found`)
+        let idsJoined = ids.join(',')
+        let pickedIds = store.app.picked.map(p => p.id).sort()
+        if (!equalArrays(ids, pickedIds)) {
+          store.app.isFetching = true
+          let url = `/api/podcasttime/find?ids=${idsJoined}`
+          fetch(url)
+          .then(r => r.json())
+          .then(results => {
+            store.app.picked = results.items
+            store.app.isSearching = false
+          })
+        }
+        let url = `/api/podcasttime/stats?ids=${idsJoined}`
+        fetch(url)
+        .then(r => r.json())
+        .then(results => {
+          store.app.pickedStats = results
+        })
+      }
+    },
+    onParamsChange: (...args) => {
+      return views.home_found.onEnter(...args)
+    }
   }),
   picks_home: new Route({
     path: '/picks',
     component: <Picks/>,
-    onEnter: (route, params, store) => {
-      return views.picks.onEnter(route, params, store)
+    onEnter: (...args) => {
+      return views.picks.onEnter(...args)
     }
   }),
   picks: new Route({
@@ -29,13 +71,18 @@ const views = {
     component: <Picks/>,
     onEnter: (route, params, store) => {
       const page = params.page || 1
+      if (page > 1) {
+        updateDocumentTitle(`Picks - page ${page}`)
+      } else {
+        updateDocumentTitle('Picks')
+      }
       store.app.isFetching = true
       fetch(`/api/podcasttime/picks/data/?page=${page}`)
       .then(r => r.json())
       .then(picks => {
-        store.app.page = page
+        // store.app.page = page
         store.app.isFetching = false
-        store.app.setPicks(picks)
+        store.app.setPicks(picks, page)
       })
     },
     onParamsChange: (route, params, store) => {
@@ -46,85 +93,60 @@ const views = {
     path: '/podcasts/:id/:slug',
     component: <Podcast/>,
     onEnter: (route, params, store) => {
-      // console.log(queryParams);
-      // const page = queryParams.page || 1
-      // store.app.setTitle('PICKS TITLEXX')
-      // console.log("PARAMS", params);
-      // let id = params.id
-      store.app.isFetching = true
-      fetch(`/api/podcasttime/podcasts/data/${params.id}/${params.slug}`)
+      if (store.app.podcast && store.app.podcast.id === params.id) {
+        // A podcast has already been loaded.
+        console.log("Do nothing");
+      } else {
+        store.app.isFetching = true
+        fetch(`/api/podcasttime/podcasts/data/${params.id}/${params.slug}`)
+        .then(r => r.json())
+        .then(podcast => {
+          store.app.setPodcast(podcast)
+          updateDocumentTitle(podcast.name)
+          store.app.isFetching = false
+        })
+      }
+    },
+    onParamsChange: (route, params, store, queryParams) => {
+      return views.podcast.onEnter(route, params, store, queryParams)
+    }
+  }),
+  podcasts: new Route({
+    path: '/podcasts/:page',
+    component: <Podcasts/>,
+    onEnter: (route, params, store, queryParams) => {
+      if (queryParams && queryParams.search) {
+        store.app.podcastsSearch = queryParams.search
+      }
+      const page = params.page || 1
+      if (page > 1) {
+        updateDocumentTitle(`Podcasts - Page ${page}`)
+      } else {
+        updateDocumentTitle(`Podcasts`)
+      }
+      let url = `/api/podcasttime/podcasts/data/?page=${page}`
+      if (store.app.podcastsSearch) {
+        url += `&search=${store.app.podcastsSearch}`
+      }
+      fetch(url)
       .then(r => r.json())
-      .then(podcast => {
-        // console.log("PODCAST FROM FETCH", podcast);
-        // console.log('STORE', store);
-        // store.setPicks(picks)
-        // store.app.picks = picks
-        store.app.setPodcast(podcast)
+      .then(podcasts => {
+        store.app.setPodcasts(podcasts, page)
         store.app.isFetching = false
-        // store.app.setPage(page)
-        // store.app.title = 'Picks Title'
-        // store.app.setTitle('PICKS TITLE')
+        document.querySelector('h3').scrollIntoView()
       })
+    },
+    onParamsChange: (route, params, store, queryParams) => {
+      return views.podcasts.onEnter(route, params, store, queryParams)
     }
   }),
-  add: new Route({
-    path: '/podcasts/add/:id',
-    // component: <Void/>,
-    onEnter: (route, params, store) => {
-      console.log('ADD', store.app.podcast, params.id);
-      store.router.goTo(views.home)
+  podcasts_home: new Route({
+    path: '/podcasts',
+    component: <Podcasts/>,
+    onEnter: (route, params, store, queryParams) => {
+      return views.podcasts.onEnter(route, params, store, queryParams)
     }
   }),
-  // userProfile: new Route({
-  //   path: '/profile/:username/:tab',
-  //   component: <UserProfile/>,
-  //   onEnter: () => {
-  //     console.log('entering user profile!');
-  //   },
-  //   beforeExit: () => {
-  //     console.log('exiting user profile!');
-  //   },
-  //   onParamsChange: (route, params) => {
-  //     console.log('params changed to', params);
-  //   }
-  // }),
-  // gallery: new Route({
-  //   path: '/gallery',
-  //   component: <Gallery/>,
-  //   beforeExit: () => {
-  //     const result = confirm('Are you sure you want to leave the gallery?');
-  //     return result;
-  //   },
-  //   onEnter: (route, params, store, queryParams)=> {
-  //     console.log('queryParams', queryParams);
-  //   }
-  // }),
-  // document: new Route({
-  //   path: '/document/:id',
-  //   component: <Document/>,
-  //   beforeEnter: (route, params, store) => {
-  //     const userIsLoggedIn = store.app.user;
-  //     if (!userIsLoggedIn) {
-  //       alert('Only logged in users can enter this route!');
-  //       return false;
-  //     }
-  //   },
-  //   onEnter: (route, params) => {
-  //     console.log(`entering document with params`, params);
-  //   }
-  // }),
-  // book: new Route({
-  //   path: '/book/:id/page/:page',
-  //   component: <Book/>,
-  //   onEnter: (route, params, store) => {
-  //     console.log(`entering book with params`, params);
-  //     store.app.setTitle(route.title);
-  //   }
-  // })
-};
+}
+
 export default views;
-
-
-// const Void = () => {
-//
-// }
