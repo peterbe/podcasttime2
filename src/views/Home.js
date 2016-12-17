@@ -30,6 +30,37 @@ class Home extends Component {
     )
   }
 
+  /* This gets called in the following three scenarios:
+     1) The user clicks the "Remove all" button
+     2) The user clicks the "Remove" button on the last pick she has left
+     3) You exist (go to the home page) and come back to a clean page
+  */
+  resetPickedPicks() {
+    sessionStorage.removeItem('picks')
+  }
+
+  updatePickedPicks() {
+    const { store } = this.props
+    const ids = store.app.picked.map(p => p.id)
+
+    // If you've never done a pick before, this is going to be null.
+    let picks = sessionStorage.getItem('picks')
+
+    const formData = new FormData()
+    formData.append('ids', ids)
+    if (picks) {
+      formData.append('picks', picks)
+    }
+    fetch(`/api/podcasttime/picked`, {
+      method: 'POST',
+      body: formData
+    })
+    .then(r => r.json())
+    .then(response => {
+      sessionStorage.setItem('picks', response.session_key)
+    })
+  }
+
   onRemovePodcast(event, podcast) {
     event.preventDefault()
     let podcasts = this.props.store.app.picked.filter(p => {
@@ -38,12 +69,16 @@ class Home extends Component {
     this.props.store.app.picked = podcasts
     let ids = podcasts.map(p => p.id)
     if (ids.length) {
+      // some left
+      this.updatePickedPicks()
       this.props.store.router.goTo(
         views.home_found,
         {ids: ids.join('-')},
         this.props.store,
       )
     } else {
+      // all removed
+      this.resetPickedPicks()
       this.props.store.router.goTo(
         views.home,
         {},
@@ -56,6 +91,7 @@ class Home extends Component {
     event.preventDefault()
     this.props.store.app.picked = []
     this.props.store.app.pickedStats = null
+    this.resetPickedPicks()
     this.props.store.router.goTo(
       views.home,
       {},
@@ -78,7 +114,9 @@ class Home extends Component {
       this._findDebounce = setTimeout(() => {
         let url = `/api/podcasttime/find?q=${search}`
         store.app.isSearching = true
-        fetch(url)
+        fetch(url, {
+          credentials: 'include',
+        })
         .then(r => r.json())
         .then(results => {
           store.app.isSearching = false
@@ -225,22 +263,28 @@ class Home extends Component {
   }
 
   onPickPodcast(event, podcast) {
+    const { store } = this.props
     event.preventDefault()
-    this.props.store.app.picked.push(podcast)
-    let ids = this.props.store.app.picked.map(p => p.id).sort()
-    this.props.store.app.searchResults = []
-    this.props.store.app.search = ''
-    this.props.store.app.searchHighlight = -1
-    this.props.store.router.goTo(
+    if (!store.app.picked.length) {
+      sessionStorage.removeItem('picks')
+    }
+    store.app.picked.push(podcast)
+    let ids = store.app.picked.map(p => p.id).sort()
+    store.app.searchResults = []
+    store.app.search = ''
+    store.app.searchHighlight = -1
+
+    this.updatePickedPicks()
+    store.router.goTo(
       views.home_found,
       {ids: ids.join('-')},
-      this.props.store,
+      store,
     )
   }
 
   render() {
 
-    const {store} = this.props;
+    const { store } = this.props;
     const {
       search,
       isSearching,

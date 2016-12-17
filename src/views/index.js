@@ -29,7 +29,7 @@ const views = {
     }
   }),
   home_found: new Route({
-    path: '/found/:ids',
+    path: '/mine/:ids',
     component: <Home/>,
     onEnter: (route, params, store, queryParams) => {
       if (params.ids) {
