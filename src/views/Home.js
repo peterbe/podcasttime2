@@ -5,6 +5,7 @@ import views from '../views';
 import { FormattedNumber } from 'react-intl'
 import './Home.css'
 import magnify from './magnify.svg'
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 
 
 class Home extends Component {
@@ -293,6 +294,17 @@ class Home extends Component {
       picked,
       pickedStats,
      } = store.app
+
+    let podcasts = null
+    if (picked.length) {
+      podcasts = <PickedPodcasts
+        podcasts={picked}
+        store={store}
+        onRemovePodcast={this.onRemovePodcast}
+        onRemoveAll={this.onRemoveAll}
+      />
+    }
+
     return (
       <div>
         <h3>How Much Time Do <i>Your</i> Podcasts Take To Listen To?</h3>
@@ -300,32 +312,33 @@ class Home extends Component {
         <form className="" onSubmit={this.onSubmit}
           style={{marginBottom: 30}}
           >
-          <div className="ui fluid huge icon input ac-wrapper">
-            <input
-              type="search"
-              ref="q"
-              value={search}
-              name="search"
-              placeholder="Search..."
-              onKeyDown={this.onKeyDownSearch}
-              onChange={this.onChangeSearch}
-            />
-            <i className="search icon"></i>
-            <ShowAutocomplete
-              search={search}
-              isSearching={isSearching}
-              onPickPodcast={this.onPickPodcast}
-              highlight={searchHighlight}
-              results={searchResults}
-            />
-          </div>
-          { picked.length ?
-            <PickedPodcasts
-              podcasts={picked}
-              store={store}
-              onRemovePodcast={this.onRemovePodcast}
-              onRemoveAll={this.onRemoveAll}
-            /> : null }
+          <ReactCSSTransitionGroup
+            transitionName="fadein"
+            transitionAppear={true}
+            transitionAppearTimeout={1000}
+            transitionEnter={false}
+            transitionLeave={false}>
+            <div className="ui fluid huge icon input ac-wrapper">
+                <input
+                  type="search"
+                  ref="q"
+                  value={search}
+                  name="search"
+                  placeholder="Search..."
+                  onKeyDown={this.onKeyDownSearch}
+                  onChange={this.onChangeSearch}
+                />
+              <i className="search icon"></i>
+              <ShowAutocomplete
+                search={search}
+                isSearching={isSearching}
+                onPickPodcast={this.onPickPodcast}
+                highlight={searchHighlight}
+                results={searchResults}
+              />
+            </div>
+          </ReactCSSTransitionGroup>
+          { podcasts }
           { pickedStats ?
             <PodcastStats
               stats={pickedStats}
@@ -431,25 +444,33 @@ const AutocompleteResult = ({
     className += ' active'
   }
   return (
-    <div
-      className={className}
-      onClick={e => onPickPodcast(e, result)}>
-      <div className="image">
-        { image }
+    <ReactCSSTransitionGroup
+          transitionName="fadein"
+          transitionAppear={true}
+          transitionAppearTimeout={400}
+          transitionEnter={false}
+          transitionLeave={false}>
+      <div
+        className={className}
+        onClick={e => onPickPodcast(e, result)}>
+        <div className="image">
+          { image }
+        </div>
+        <p style={{marginLeft: 75}}>
+          <b>{ result.name }</b><br/>
+          {
+            result.last_fetch ?
+            <span>
+              <FormattedNumber value={result.episodes}/> episodes,
+              {' '}
+              about <FormattedTime hours={result.hours}/>.
+            </span>
+            : <span>?? episodes</span>
+          }
+        </p>
       </div>
-      <p style={{marginLeft: 75}}>
-        <b>{ result.name }</b><br/>
-        {
-          result.last_fetch ?
-          <span>
-            <FormattedNumber value={result.episodes}/> episodes,
-            {' '}
-            about <FormattedTime hours={result.hours}/>.
-          </span>
-          : <span>?? episodes</span>
-        }
-      </p>
-    </div>
+    </ReactCSSTransitionGroup>
+
   )
 }
 
@@ -515,36 +536,43 @@ const Podcast = ({ podcast, onRemovePodcast, store }) => {
     imageURL = '/static/images/no-image.png'
   }
   return (
-    <div className="clearfix podcast">
-      <div className="actions">
-        <button
-          type="button"
-          className="ui button"
-          onClick={e => onRemovePodcast(e, podcast)}
-          >Remove</button>
-      </div>
-      <div className="img">
-        <Link
-          view={views.podcast}
-          params={{id: podcast.id, slug: podcast.slug}}
-          store={store}
-        >
-          <img src={imageURL} role="presentation"/>
-        </Link>
-      </div>
-      <div className="meta">
-        <h3>
+    <ReactCSSTransitionGroup
+          transitionName="fadein"
+          transitionAppear={true}
+          transitionAppearTimeout={500}
+          transitionEnterTimeout={50}
+          transitionLeaveTimeout={30}>
+      <div className="clearfix podcast">
+        <div className="actions">
+          <button
+            type="button"
+            className="ui button"
+            onClick={e => onRemovePodcast(e, podcast)}
+            >Remove</button>
+        </div>
+        <div className="img">
           <Link
-            title={podcast.name}
             view={views.podcast}
             params={{id: podcast.id, slug: podcast.slug}}
             store={store}
           >
-            {podcast.name}
+            <img src={imageURL} role="presentation"/>
           </Link>
-        </h3>
-        { text }
+        </div>
+        <div className="meta">
+          <h3>
+            <Link
+              title={podcast.name}
+              view={views.podcast}
+              params={{id: podcast.id, slug: podcast.slug}}
+              store={store}
+            >
+              {podcast.name}
+            </Link>
+          </h3>
+          { text }
+        </div>
       </div>
-    </div>
+    </ReactCSSTransitionGroup>
   )
 }

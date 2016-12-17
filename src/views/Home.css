@@ -4,7 +4,7 @@
 
 .ac-results {
     position: absolute;
-    z-index: 2;
+    z-index: 1000;
     background-color: white;
     opacity: 0.96;
     max-height: 500px;
@@ -49,4 +49,29 @@
 
 .ac-result p {
     font-size: 13px;
+}
+
+
+.fadein-enter {
+  opacity: 0.01;
+}
+.fadein-enter.fadein-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+.fadein-leave {
+  opacity: 1;
+}
+.fadein-leave.fadein-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}
+
+
+.fadein-appear {
+  opacity: 0.01;
+}
+.fadein-appear.fadein-appear-active {
+  opacity: 1;
+  transition: opacity .5s ease-in;
 }
