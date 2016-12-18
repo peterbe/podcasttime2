@@ -561,7 +561,7 @@ const Podcast = ({ podcast, onRemovePodcast, store }) => {
           </Link>
         </div>
         <div className="meta">
-          <h3>
+          <h4>
             <Link
               title={podcast.name}
               view={views.podcast}
@@ -570,7 +570,7 @@ const Podcast = ({ podcast, onRemovePodcast, store }) => {
             >
               {podcast.name}
             </Link>
-          </h3>
+          </h4>
           { text }
         </div>
       </div>

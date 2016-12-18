@@ -9,10 +9,10 @@
   margin-bottom: 60px;
 }
 
-.header .sub-title {
+/*.header .sub-title {
   margin-left: 20px;
   font-size: 70%;
-}
+}*/
 
 .clearfix:before, .clearfix:after { content: " "; display: table; }
 .clearfix:after { clear: both; }
@@ -113,4 +113,30 @@ form select {
 .stats-leave.stats-leave-active {
   opacity: 0.01;
   transition: opacity 300ms ease-in;
+}
+
+
+.ui.header {
+    /*border-bottom: 1px solid #ccc;*/
+    margin-bottom: 40px;
+}
+
+/* Mobile */
+.header h1 {
+    text-align: center;
+    font-size: 2.1em;
+}
+.header h2 {
+    font-size: 0.9em;
+}
+/* Desktop */
+@media (min-width:1025px) {
+    /*.header h1 {
+        float: left;
+    }*/
+    .header h2 {
+        /*float: right;*/
+        font-size: 1.3em;
+    }
+
 }

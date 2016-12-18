@@ -1,3 +1,17 @@
 div.cards.segment {
-    margin-bottom: 5px;
+  margin-bottom: 5px;
+}
+
+/* Default, mobile */
+div.ui.cards {
+    padding: 4px;
+}
+
+
+/* Desktop */
+@media (min-width:1025px) {
+    div.ui.cards {
+        padding: 14px;
+    }
+
 }

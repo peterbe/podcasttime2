@@ -23,10 +23,11 @@ ReactDOM.render(
           <div className="ui header">
             <h1>
               <Link view={views.home} store={store}>Podcast Time</Link>
-              <span className="sub-title">
-                How Much Time Do <i>Your</i> Podcasts Take To Listen To?
-              </span>
             </h1>
+            <h2>
+                How Much Time Do <i>Your</i> Podcasts Take To Listen To?
+            </h2>
+            <div className="clearfix"></div>
           </div>
           <MobxRouter/>
         </div>
