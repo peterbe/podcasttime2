@@ -45,15 +45,16 @@ class Podcast extends Component {
         { isFetching ? <RippleCentered scale={2}/> : null }
         { podcast ?
           <div>
-            <AddLinks
-              store={store}
-              id={podcast.id}
-              onAddThis={this.onAddThis}
-              />
+
             <Metadata
               {...podcast}
               episodeCount={podcast.episodes_count}
               />
+              <AddLinks
+                store={store}
+                id={podcast.id}
+                onAddThis={this.onAddThis}
+                />
             <Episodes
               store={store}
               episodes={podcast.episodes}
@@ -71,6 +72,28 @@ export default inject('store',)(observer(Podcast))
 
 
 const AddLinks = ({ id, store, onAddThis }) => {
+  let homeLink = (
+    <Link
+      className="ui button"
+      view={views.home}
+      store={store}
+    >
+      Back to Home
+    </Link>
+  )
+  if (store.app.picked.length) {
+    let ids = store.app.picked.map(p => p.id)
+    homeLink = (
+      <Link
+        className="ui button"
+        view={views.home_found}
+        params={{ids: ids.join('-')}}
+        store={store}
+      >
+        Back to Home
+      </Link>
+    )
+  }
   return (
     <div className="ui container">
       <a
@@ -79,13 +102,7 @@ const AddLinks = ({ id, store, onAddThis }) => {
       >
         I listen to this!
       </a>
-      <Link
-        className="ui button"
-        view={views.home}
-        store={store}
-      >
-        Go back to Home
-      </Link>
+      { homeLink }
     </div>
   )
 }
@@ -101,39 +118,49 @@ const Metadata = ({
   episodeCount,
 }) => {
   return (
-    <div className="ui segment clearing">
-      {
-        thumb ?
-        <img
-          role="presentation"
-          style={{float: 'left'}}
-          src={thumb.url}/> :
-        <img
-          role="presentation"
-          style={{float: 'left'}}
-          src="/static/images/no-image.png"
-          width="300" height="300"/>
-      }
-      <div style={{marginLeft: 330}}>
-        <h2>Title: { name }</h2>
-        <h3>
-          Number of episodes:{' '}
-          <FormattedNumber value={episodeCount} />
-        </h3>
-        <h3>
-          Total amount of content:{' '}
-          <FormattedDuration seconds={total_seconds}/>
-        </h3>
-        <h3>
-          Times picked: <FormattedNumber value={times_picked}/>
-        </h3>
-        <h3>
-          Last updated:{' '}
-          { last_fetch ?
-            <FormattedRelative value={last_fetch}/> :
-            <FormattedRelative value={modified}/>
-          }
-        </h3>
+    <div className="ui items centered">
+      <div className="item">
+        <div className="image">
+        {
+          thumb ?
+          <img
+            className="ui medium rounded image"
+            role="presentation"
+            style={{float: 'left'}}
+            src={thumb.url}/> :
+          <img
+            role="presentation"
+            style={{float: 'left'}}
+            src="/static/images/no-image.png"
+            width="300" height="300"/>
+        }
+        </div>
+        <div className="content">
+          <h1 className="ui header">Title: { name }</h1>
+          <div className="ui list">
+            <div className="item">
+              <div className="header"><FormattedNumber value={episodeCount} /></div>
+              Episodes
+            </div>
+            <div className="item">
+              <div className="header"><FormattedDuration seconds={total_seconds}/></div>
+              Total amount of content
+            </div>
+            <div className="item">
+              <div className="header"><FormattedNumber value={times_picked}/></div>
+              Times picked
+            </div>
+            <div className="item">
+              <div className="header">
+                { last_fetch ?
+                  <FormattedRelative value={last_fetch}/> :
+                  <FormattedRelative value={modified}/>
+                }
+              </div>
+              Since last update
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

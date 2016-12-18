@@ -21,13 +21,19 @@ ReactDOM.render(
       <div className="site">
         <div className="ui container site-content">
           <div className="ui header">
-            <h1>
+            <h1 className="ui header">
+              <Link view={views.home} store={store}>Podcast Time</Link>
+              <div className="sub header">
+                How Much Time Do <i>Your</i> Podcasts Take To Listen To?
+              </div>
+            </h1>
+            {/* <h1>
               <Link view={views.home} store={store}>Podcast Time</Link>
             </h1>
             <h2>
                 How Much Time Do <i>Your</i> Podcasts Take To Listen To?
             </h2>
-            <div className="clearfix"></div>
+            <div className="clearfix"></div> */}
           </div>
           <MobxRouter/>
         </div>
