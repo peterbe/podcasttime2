@@ -307,7 +307,8 @@ class Home extends Component {
 
     return (
       <div>
-        <h3>How Much Time Do <i>Your</i> Podcasts Take To Listen To?</h3>
+        {/* <h3 className="ui dixviding header center aligned">How Much Time Do <i>Your</i> Podcasts Take To Listen To?</h3> */}
+        <h3>Type to search for the podcasts <i>you</i> listen to</h3>
 
         <form className="" onSubmit={this.onSubmit}
           style={{marginBottom: 30}}

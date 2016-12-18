@@ -1,3 +1,19 @@
+.site {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.site-content {
+  flex: 1;
+  margin-bottom: 60px;
+}
+
+.header .sub-title {
+  margin-left: 20px;
+  font-size: 70%;
+}
+
 .clearfix:before, .clearfix:after { content: " "; display: table; }
 .clearfix:after { clear: both; }
 

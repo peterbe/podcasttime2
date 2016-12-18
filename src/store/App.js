@@ -3,8 +3,6 @@ import {extendObservable, action} from 'mobx';
 class AppStore {
   constructor() {
     extendObservable(this, {
-      title: 'PodcastTime',
-
       isSearching: false,
       search: '',
       searchResults: null,

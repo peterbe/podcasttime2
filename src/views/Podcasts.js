@@ -18,7 +18,9 @@ class Podcasts extends Component {
 
     return (
       <div className="ui container">
-        <h3>Picks - Page {page}</h3>
+        <h2 className="ui dividing header center aligned">Podcasts</h2>
+        <p>These are the most popular podcasts collected so far</p>
+        <h3>Page {page}</h3>
 
         <SearchForm
           search={podcastsSearch}

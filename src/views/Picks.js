@@ -30,7 +30,9 @@ class Picks extends Component {
     updateDocumentTitle('Picks')
     return (
       <div className="ui container">
-        <h3> Picks - Page {page}</h3>
+        <h2 className="ui dividing header center aligned">Picks</h2>
+        <p><b>Picks</b> are collections of podcasts that people have chosen.</p>
+        <h3>Page {page}</h3>
 
         { isFetching ? <h4>Fetching...</h4> : null }
 
