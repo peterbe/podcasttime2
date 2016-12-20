@@ -68,8 +68,8 @@ export function equalArrays(arr1, arr2) {
 
 export function updateDocumentTitle(title) {
   if (!title) {
-    document.title = 'PodcastTime - How Much Time Do Your Podcasts Take To Listen To?'
+    document.title = 'Podcast Time - How Much Time Do Your Podcasts Take To Listen To?'
   } else {
-    document.title = `${title} - PodcastTime`
+    document.title = `${title} - Podcast Time`
   }
 }
