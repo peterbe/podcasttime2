@@ -162,10 +162,6 @@ const PodcastDescription = ({ episodeCount, episodeHours}) => {
     return <i>episodes currently unknown</i>
   }
 }
-// PodcastDescription.propTypes = {
-//   episodeCount: PropTypes.number.isRequired,
-//   episodeHours: PropTypes.number.isRequired,
-// }
 
 
 // XXX find a way to share this code with the Pagination in Picks.js

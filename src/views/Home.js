@@ -487,8 +487,6 @@ const PickedPodcasts = ({
   onRemovePodcast,
   onRemoveAll,
 }) => {
-  // XXX instead of style we should set a classname that'll animate it
-  // in as a fade
   let style = {};
   if (podcasts.length) {
     style.display = 'block';
