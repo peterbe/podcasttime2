@@ -3184,6 +3184,10 @@ loader-utils@0.2.x, loader-utils@^0.2.11, loader-utils@^0.2.16, loader-utils@^0.
     json5 "^0.5.0"
     object-assign "^4.0.1"
 
+loadjs@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/loadjs/-/loadjs-3.2.1.tgz#3c2dd0e126f688ff833082076a0fec3ed1f92242"
+
 lodash._arraycopy@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/lodash._arraycopy/-/lodash._arraycopy-3.0.0.tgz#76e7b7c1f1fb92547374878a562ed06a3e50f6e1"

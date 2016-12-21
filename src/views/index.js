@@ -52,6 +52,14 @@ const views = {
         .then(r => r.json())
         .then(results => {
           store.app.pickedStats = results
+
+          url = `/api/podcasttime/stats/episodes?ids=${ids}`
+          fetch(url)
+          .then(r => r.json())
+          .then(results => {
+            store.app.pickedStatsEpisodes = results.episodes
+          })
+
         })
       }
     },
@@ -92,18 +100,28 @@ const views = {
   podcast: new Route({
     path: '/podcasts/:id/:slug',
     component: <Podcast/>,
-    onEnter: (route, params, store) => {
+    onEnter: (route, params, store, queryParams, attempts = 0) => {
       if (store.app.podcast && store.app.podcast.id === params.id) {
         // A podcast has already been loaded.
-        console.log("Do nothing");
+        store.app.isFetching = false
       } else {
         store.app.isFetching = true
-        fetch(`/api/podcasttime/podcasts/data/${params.id}/${params.slug}`)
+        const url = `/api/podcasttime/podcasts/data/${params.id}/${params.slug}`
+        fetch(url)
         .then(r => r.json())
         .then(podcast => {
           store.app.setPodcast(podcast)
           updateDocumentTitle(podcast.name)
           store.app.isFetching = false
+          if (podcast._updating) {
+            if (attempts < 4) {
+              setTimeout(() => {
+                views.podcast.onEnter(
+                  route, params, store, queryParams, attempts + 1
+                )
+              }, 10 * 1000)
+            }
+          }
         })
       }
     },

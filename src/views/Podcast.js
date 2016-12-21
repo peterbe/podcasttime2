@@ -43,6 +43,8 @@ class Podcast extends Component {
       <div className="ui container">
 
         { isFetching ? <RippleCentered scale={2}/> : null }
+        { podcast && podcast._updating ? <p>Updating right now...</p> : null }
+        { podcast && podcast._has_error ? <p>Last update failed.</p> : null }
         { podcast ?
           <div>
 
@@ -62,7 +64,6 @@ class Podcast extends Component {
           </div>
           : null
         }
-
       </div>
     )
   }

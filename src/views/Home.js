@@ -6,6 +6,7 @@ import { FormattedNumber } from 'react-intl'
 import './Home.css'
 import magnify from './magnify.svg'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
+import loadJS from 'loadjs'
 
 
 class Home extends Component {
@@ -92,6 +93,7 @@ class Home extends Component {
     event.preventDefault()
     this.props.store.app.picked = []
     this.props.store.app.pickedStats = null
+    this.props.store.app.pickedStatsEpisodes = null
     this.resetPickedPicks()
     this.props.store.router.goTo(
       views.home,
@@ -203,6 +205,13 @@ class Home extends Component {
               .then(r => r.json())
               .then(results => {
                 store.app.pickedStats = results
+
+                url = `/api/podcasttime/stats/episodes?ids=${ids}`
+                fetch(url)
+                .then(r => r.json())
+                .then(results => {
+                  store.app.pickedStatsEpisodes = results.episodes
+                })
               })
             }
           }
@@ -293,6 +302,7 @@ class Home extends Component {
       searchHighlight,
       picked,
       pickedStats,
+      pickedStatsEpisodes,
      } = store.app
 
     let podcasts = null
@@ -344,6 +354,10 @@ class Home extends Component {
             <PodcastStats
               stats={pickedStats}
             /> : null }
+          { pickedStatsEpisodes ?
+            <BubblePlot
+              episodes={pickedStatsEpisodes}
+            /> : null }
         </form>
 
       </div>
@@ -364,6 +378,60 @@ const PodcastStats = ({ stats }) => {
       </div>
     </div>
   )
+}
+
+
+class BubblePlot extends Component {
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.props.episodes !== nextProps.episodes
+  }
+
+  render() {
+
+    const containerWidth = document.querySelector('.container').clientWidth
+    const { episodes } = this.props
+    // console.log('RENDER', episodes);
+    loadJS(['https://cdn.plot.ly/plotly-latest.min.js'], {
+      success: () => {
+        // console.log("ARGS",args);
+
+        let data = []
+        episodes.forEach(group => {
+          if (group.episodes.length) {
+            data.push({
+              name: group.name,
+              x: group.episodes.map(e => e.date),
+              y: group.episodes.map(e => e.duration),
+              mode: 'lines+markers',
+              marker: {
+                // color: 'rgb(219, 64, 82)',
+                size: 12
+              }
+            })
+          }
+        })
+
+        var layout = {
+          title: 'Your Podcasts Time Plot',
+          showlegend: true,
+          height: 600,
+          width: containerWidth
+        };
+        // console.log('window.Plotly', window.Plotly);
+        window.Plotly.newPlot('plotly', data, layout);
+      }
+    })
+
+    return (
+      <div className="stats">
+        <div
+          id="plotly"
+          style={{width: this.containerWidth, height: 600, textAlign: 'center'}}></div>
+      </div>
+    )
+  }
+
 }
 
 const StatsUnit = ({ hours, unit }) => {

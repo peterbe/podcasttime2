@@ -9,6 +9,7 @@ class AppStore {
       searchHighlight: -1,
       picked: [],
       pickedStats: null,
+      pickedStatsEpisodes: null,
 
       pendingPodcasts: [],
 
