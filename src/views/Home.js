@@ -402,10 +402,9 @@ class BubblePlot extends Component {
             data.push({
               name: group.name,
               x: group.episodes.map(e => e.date),
-              y: group.episodes.map(e => e.duration),
+              y: group.episodes.map(e => (e.duration / 60).toFixed(0)),
               mode: 'lines+markers',
               marker: {
-                // color: 'rgb(219, 64, 82)',
                 size: 12
               }
             })
@@ -415,10 +414,19 @@ class BubblePlot extends Component {
         var layout = {
           title: 'Your Podcasts Time Plot',
           showlegend: true,
+          legend: {"orientation": "h"},
           height: 600,
-          width: containerWidth
+          width: containerWidth,
+          xaxis: {
+            title: 'Time',
+            showgrid: false,
+            zeroline: false
+          },
+          yaxis: {
+            title: 'Minutes of content',
+            showline: false
+          }
         };
-        // console.log('window.Plotly', window.Plotly);
         window.Plotly.newPlot('plotly', data, layout);
       }
     })
