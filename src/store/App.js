@@ -13,6 +13,8 @@ class AppStore {
 
       pendingPodcasts: [],
 
+      statsNumbers: null,
+
       picks: null,
       isFetching: false,
       page: 1,

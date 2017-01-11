@@ -9,7 +9,7 @@
     opacity: 0.96;
     max-height: 500px;
     overflow: auto;
-    margin-top: 54px;
+    /*margin-top: 54px;*/
     width: 100%;
     border-left: 1px solid rgba(34, 36, 38, 0.15);
     border-right: 1px solid rgba(34, 36, 38, 0.15);
@@ -74,4 +74,8 @@
 .fadein-appear.fadein-appear-active {
   opacity: 1;
   transition: opacity .5s ease-in;
+}
+
+.statistic-unit {
+    text-align: center;
 }

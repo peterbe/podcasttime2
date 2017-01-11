@@ -52,7 +52,7 @@ form select {
 }
 .selected .podcast .img {
   float: left;
-  width: 60px;
+  width: 100px;
   margin-right: 10px;
 }
 .selected .podcast .img img {
@@ -138,5 +138,10 @@ h1.ui.header {
         /*float: right;*/
         font-size: 1.3em;
     }
+
+    /*.selected .podcast .img {
+        width: 100px;
+    }*/
+
 
 }

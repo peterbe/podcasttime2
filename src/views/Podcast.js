@@ -11,7 +11,7 @@ import {
   FormattedDate,
   FormattedNumber,
 } from 'react-intl'
-
+import './Podcast.css'
 
 class Podcast extends Component {
   constructor(props) {
@@ -26,7 +26,6 @@ class Podcast extends Component {
     if (!ids.includes(store.app.podcast.id)) {
       ids.push(store.app.podcast.id)
     }
-    ids = ids.sort()
     store.router.goTo(
       views.home_found,
       {ids: ids.join('-')},
@@ -40,7 +39,7 @@ class Podcast extends Component {
     const { podcast, isFetching } = store.app
 
     return (
-      <div className="ui container">
+      <div className="">
 
         { isFetching ? <RippleCentered scale={2}/> : null }
         { podcast && podcast._updating ? <p>Updating right now...</p> : null }
@@ -52,15 +51,20 @@ class Podcast extends Component {
               {...podcast}
               episodeCount={podcast.episodes_count}
               />
+            <div id="add-links">
               <AddLinks
                 store={store}
                 id={podcast.id}
                 onAddThis={this.onAddThis}
                 />
-            <Episodes
-              store={store}
-              episodes={podcast.episodes}
-              />
+            </div>
+            <div id="episodes">
+              <Episodes
+                store={store}
+                episodes={podcast.episodes}
+                />
+            </div>
+
           </div>
           : null
         }
@@ -75,7 +79,8 @@ export default inject('store',)(observer(Podcast))
 const AddLinks = ({ id, store, onAddThis }) => {
   let homeLink = (
     <Link
-      className="ui button"
+      className="btn btn-secondary"
+      role="button"
       view={views.home}
       store={store}
     >
@@ -86,7 +91,7 @@ const AddLinks = ({ id, store, onAddThis }) => {
     let ids = store.app.picked.map(p => p.id)
     homeLink = (
       <Link
-        className="ui button"
+        className="btn btn-secondary"
         view={views.home_found}
         params={{ids: ids.join('-')}}
         store={store}
@@ -96,14 +101,18 @@ const AddLinks = ({ id, store, onAddThis }) => {
     )
   }
   return (
-    <div className="ui container">
-      <a
-        className="ui button primary"
-        onClick={onAddThis}
-      >
-        I listen to this!
-      </a>
-      { homeLink }
+    <div className="clearfix container">
+      <div className="row justify-content-center">
+        <a
+          className="btn btn-primary"
+          role="button"
+          onClick={onAddThis}
+        >
+          I listen to this!
+        </a>
+        {' '}
+        { homeLink }
+      </div>
     </div>
   )
 }
@@ -119,48 +128,42 @@ const Metadata = ({
   episodeCount,
 }) => {
   return (
-    <div className="ui items centered">
-      <div className="item">
-        <div className="image">
+    <div className="metadata">
+      <div className="item row">
+        <div className="image col-4">
         {
           thumb ?
           <img
-            className="ui medium rounded image"
+            className="img-thumbnail"
             role="presentation"
             style={{float: 'left'}}
             src={thumb.url}/> :
           <img
+            className="img-thumbnail"
             role="presentation"
             style={{float: 'left'}}
             src="/static/images/no-image.png"
             width="300" height="300"/>
         }
         </div>
-        <div className="content">
-          <h1 className="ui header">Title: { name }</h1>
-          <div className="ui list">
-            <div className="item">
-              <div className="header"><FormattedNumber value={episodeCount} /></div>
-              Episodes
-            </div>
-            <div className="item">
-              <div className="header"><FormattedDuration seconds={total_seconds}/></div>
-              Total amount of content
-            </div>
-            <div className="item">
-              <div className="header"><FormattedNumber value={times_picked}/></div>
-              Times picked
-            </div>
-            <div className="item">
-              <div className="header">
-                { last_fetch ?
-                  <FormattedRelative value={last_fetch}/> :
-                  <FormattedRelative value={modified}/>
-                }
-              </div>
-              Since last update
-            </div>
-          </div>
+        <div className="content col-8">
+          <h1>Title: { name }</h1>
+          <dl className="row">
+            <dt className="col-sm-4">Episodes</dt>
+            <dd className="col-sm-8"><FormattedNumber value={episodeCount} /></dd>
+
+            <dt className="col-sm-4">Total amount of content</dt>
+            <dd className="col-sm-8"><FormattedDuration seconds={total_seconds}/></dd>
+
+            <dt className="col-sm-4">Times picked</dt>
+            <dd className="col-sm-8"><FormattedNumber value={times_picked}/></dd>
+
+            <dt className="col-sm-4">Last updated</dt>
+            <dd className="col-sm-8">{ last_fetch ?
+              <FormattedRelative value={last_fetch}/> :
+              <FormattedRelative value={modified}/>
+            }</dd>
+          </dl>
         </div>
       </div>
     </div>
@@ -169,7 +172,7 @@ const Metadata = ({
 
 const Episodes = ({ episodes }) => {
   return (
-    <table className="ui celled table">
+    <table className="table table-sm">
       <thead>
         <tr>
           <th>Published</th>

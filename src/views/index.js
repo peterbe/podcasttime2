@@ -8,6 +8,9 @@ import Home from './Home'
 import Picks from './Picks'
 import Podcast from './Podcast'
 import Podcasts from './Podcasts'
+import About from './About'
+
+import 'bootstrap/dist/css/bootstrap.css';
 
 //misc
 import {
@@ -71,6 +74,7 @@ const views = {
     path: '/picks',
     component: <Picks/>,
     onEnter: (...args) => {
+      updateDocumentTitle('Picks')
       return views.picks.onEnter(...args)
     }
   }),
@@ -151,10 +155,12 @@ const views = {
       .then(podcasts => {
         store.app.setPodcasts(podcasts, page)
         store.app.isFetching = false
-        document.querySelector('h3').scrollIntoView()
+        document.querySelector('.page-number-header').scrollIntoView()
       })
     },
     onParamsChange: (route, params, store, queryParams) => {
+      store.app.isFetching = true
+      store.app.podcasts = null
       return views.podcasts.onEnter(route, params, store, queryParams)
     }
   }),
@@ -163,6 +169,18 @@ const views = {
     component: <Podcasts/>,
     onEnter: (route, params, store, queryParams) => {
       return views.podcasts.onEnter(route, params, store, queryParams)
+    }
+  }),
+  about: new Route({
+    path: '/about',
+    component: <About/>,
+    onEnter: (route, params, store, queryParams) => {
+      const url = '/api/podcasttime/general-stats/numbers'
+      fetch(url)
+      .then(r => r.json())
+      .then(stats => {
+        store.app.statsNumbers = stats.numbers
+      })
     }
   }),
 }

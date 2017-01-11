@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {observer, inject} from 'mobx-react';
 import {Link} from 'mobx-router';
 import views from '../views';
-import { updateDocumentTitle } from './Common'
+import { Pagination } from './Common'
 import './picks.css'
 
 
@@ -22,12 +22,12 @@ class Picks extends Component {
           }
           <Pagination
             store={store}
+            view={views.picks}
             pagination={picks.pagination}/>
         </div>
       )
     }
 
-    updateDocumentTitle('Picks')
     return (
       <div className="ui container">
         <h2 className="ui dividing header center aligned">Picks</h2>
@@ -49,7 +49,8 @@ export default inject('store')(observer(Picks))
 const Pick = ({ pick, store }) => {
   return (
     <div
-      className="ui eight cards segment">
+      className=""
+      style={{border: '1px solid #ccc', margin: 15, padding: 10}}>
       {
         pick.podcasts.map(podcast => {
           return <Podcast
@@ -64,94 +65,92 @@ const Pick = ({ pick, store }) => {
 
 const Podcast = ({podcast, store}) => {
   return (
-    <div
-      className="ui centered card"
+    <figure
+      className="figure"
+      style={{marginRight: 4}}
       title={podcast.name}>
       <Link
-        className="image"
         view={views.podcast}
         store={store}
         params={{id: podcast.id, slug: podcast.slug}}>
-        {
-          podcast.image ?
-          <img src={podcast.image} role="presentation"/> :
-          <img src="/static/podcasttime/images/no-image.png"  role="presentation"/>
-         }
-         <span className="floating ui teal label" title="Times picked">
-           {podcast.times_picked}
-         </span>
+        <img
+          className="figure-img img-fluid rounded"
+          src={podcast.image ? podcast.image : '/static/podcasttime/images/no-image.png'}
+          role="presentation"
+          style={{width: 100}}/>
       </Link>
-    </div>
+      <figcaption className="figure-caption" style={{textAlign: 'center'}}
+        title="Times picked">
+        <span className="badge badge-pill badge-default">{podcast.times_picked}</span>
+      </figcaption>
+    </figure>
   )
 }
 
-
-const Pagination = ({ pagination, store }) => {
-
-  const prev = (page) => {
-    return `← Page ${page}`
-  }
-
-  const next = (page) => {
-    return `Page ${page} →`
-  }
-
-  const current = (number, pages) => {
-    return `Page ${number} of ${pages}`
-  }
-
-  let nextLink = null
-  if (pagination.has_next) {
-    nextLink = (
-      <Link
-        className="item"
-        view={views.picks}
-        store={store}
-        params={{page: pagination.next_page_number}}
-      >
-        {next(pagination.next_page_number)}
-      </Link>
-    )
-  } else {
-    nextLink = (
-      <a className="item disabled">
-        Page{' '}{pagination.num_pages}
-      </a>
-    )
-  }
-
-  let prevLink = null
-  if (pagination.has_previous) {
-    prevLink = (
-      <Link
-        className="item"
-        view={views.picks}
-        store={store}
-        params={pagination.previous_page_number}
-      >
-        {prev(pagination.previous_page_number)}
-      </Link>
-    )
-  } else {
-    prevLink = (
-      <a className="item disabled">
-        Page 1
-      </a>
-    )
-  }
-
-  return (
-    <div className="ui two column centered grid" style={{marginTop: 100}}>
-      <div className="ui pagination menu">
-        { prevLink }
-        <a className="item disabled">
-          {current(pagination.number, pagination.num_pages)}
-        </a>
-        { nextLink }
-      </div>
-    </div>
-  )
-}
-// Pagination.propTypes = {
-//   pagination: PropTypes.object.isRequired,
+//
+// const Pagination = ({ pagination, store }) => {
+//
+//   const prev = (page) => {
+//     return `← Page ${page}`
+//   }
+//
+//   const next = (page) => {
+//     return `Page ${page} →`
+//   }
+//
+//   const current = (number, pages) => {
+//     return `Page ${number} of ${pages}`
+//   }
+//
+//   let nextLink = null
+//   if (pagination.has_next) {
+//     nextLink = (
+//       <Link
+//         className="item"
+//         view={views.picks}
+//         store={store}
+//         params={{page: pagination.next_page_number}}
+//       >
+//         {next(pagination.next_page_number)}
+//       </Link>
+//     )
+//   } else {
+//     nextLink = (
+//       <a className="item disabled">
+//         Page{' '}{pagination.num_pages}
+//       </a>
+//     )
+//   }
+//
+//   let prevLink = null
+//   if (pagination.has_previous) {
+//     prevLink = (
+//       <Link
+//         className="item"
+//         view={views.picks}
+//         store={store}
+//         params={pagination.previous_page_number}
+//       >
+//         {prev(pagination.previous_page_number)}
+//       </Link>
+//     )
+//   } else {
+//     prevLink = (
+//       <a className="item disabled">
+//         Page 1
+//       </a>
+//     )
+//   }
+//
+//   return (
+//     <div className="ui two column centered grid" style={{marginTop: 100}}>
+//       <div className="ui pagination menu">
+//         { prevLink }
+//         <a className="item disabled">
+//           {current(pagination.number, pagination.num_pages)}
+//         </a>
+//         { nextLink }
+//       </div>
+//     </div>
+//   )
 // }

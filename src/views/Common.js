@@ -1,5 +1,7 @@
 import React from 'react';
+import {Link} from 'mobx-router';
 import './ripple.css'
+
 
 export const Ripple = ({ scale = '2' }) => {
   // Generated on http://loading.io/
@@ -72,4 +74,91 @@ export function updateDocumentTitle(title) {
   } else {
     document.title = `${title} - Podcast Time`
   }
+}
+
+
+export const Pagination = ({
+  pagination,
+  view,
+  search = null,
+  store,
+}) => {
+
+  const prev = (page) => {
+    return `← Page ${page}`
+  }
+
+  const next = (page) => {
+    return `Page ${page} →`
+  }
+
+  const current = (number, pages) => {
+    return `Page ${number} or ${pages}`
+  }
+
+  let nextLink = null
+  let queryParams = {}
+  if (search) {
+    queryParams.search = search
+  }
+  if (pagination.has_next) {
+    nextLink = (
+      <li className="page-item">
+        <Link
+          className="page-link"
+          view={view}
+          params={{page: pagination.next_page_number}}
+          queryParams={queryParams}
+          store={store}
+        >
+          {next(pagination.next_page_number)}
+        </Link>
+      </li>
+    )
+  } else {
+    nextLink = (
+      <li className="page-item disabled">
+        <a className="page-link" href="#" tabIndex={-1}>Page{' '}{pagination.num_pages}</a>
+      </li>
+    )
+  }
+
+  let prevLink = null
+  if (pagination.has_previous) {
+    // let prevURL = '/podcasts'
+    // if (search) {
+    //   prevURL += '/' + search
+    // }
+    prevLink = (
+      <li className="page-item">
+        <Link
+          className="page-link"
+          view={view}
+          params={{page: pagination.previous_page_number}}
+          queryParams={queryParams}
+          store={store}
+        >
+          {prev(pagination.previous_page_number)}
+        </Link>
+      </li>
+    )
+  } else {
+    prevLink = (
+      <li className="page-item disabled">
+        <a className="page-link" href="#" tabIndex={-1}>Page 1</a>
+      </li>
+    )
+  }
+
+  return (
+    <nav aria-label="Pagination">
+      <ul className="pagination justify-content-center pagination-lg">
+        { prevLink }
+        <li className="page-item disabled">
+          <a className="page-link" href="#">{current(pagination.number, pagination.num_pages)}</a>
+        </li>
+        { nextLink }
+      </ul>
+    </nav>
+  )
 }

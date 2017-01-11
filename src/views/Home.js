@@ -320,21 +320,22 @@ class Home extends Component {
         {/* <h3 className="ui dixviding header center aligned">How Much Time Do <i>Your</i> Podcasts Take To Listen To?</h3> */}
         <h3>Type to search for the podcasts <i>you</i> listen to</h3>
 
-        <form className="" onSubmit={this.onSubmit}
+        <form className="clearfixxxx" onSubmit={this.onSubmit}
           style={{marginBottom: 30}}
           >
           <ReactCSSTransitionGroup
             transitionName="fadein"
             transitionAppear={true}
-            transitionAppearTimeout={1000}
+            transitionAppearTimeout={600}
             transitionEnter={false}
             transitionLeave={false}>
-            <div className="ui fluid huge icon input ac-wrapper">
+            <div className="xicon xinput ac-wrapper">
                 <input
                   type="search"
                   ref="q"
                   value={search}
                   name="search"
+                  className="form-control form-control-lg"
                   placeholder="Search..."
                   onKeyDown={this.onKeyDownSearch}
                   onChange={this.onChangeSearch}
@@ -370,12 +371,10 @@ export default inject('store',)(observer(Home))
 
 const PodcastStats = ({ stats }) => {
   return (
-    <div className="stats">
-      <div className="ui three statistics">
-        <StatsUnit hours={stats.per_day} unit="per day"/>
-        <StatsUnit hours={stats.per_week} unit="per week"/>
-        <StatsUnit hours={stats.per_month} unit="per month"/>
-      </div>
+    <div className="statsxxx clearfix">
+      <StatsUnit hours={stats.per_day} unit="per day"/>
+      <StatsUnit hours={stats.per_week} unit="per week"/>
+      <StatsUnit hours={stats.per_month} unit="per month"/>
     </div>
   )
 }
@@ -449,10 +448,29 @@ const StatsUnit = ({ hours, unit }) => {
     hours *= 60
   }
   let value = hours.toFixed(1)
+
+//   <h3>
+//   Fancy display heading
+//   <small class="text-muted">With faded secondary text</small>
+// </h3>
+  // return (
+  //   <div className="ui statistic">
+  //     <div className="value">{value}</div>
+  //     <div className="label">
+  //       {
+  //         minutes ?
+  //         <i className="minutes">minutes</i> :
+  //         <i className="hours">hours</i>
+  //       }
+  //       {' '}
+  //       {unit}
+  //     </div>
+  //   </div>
+  // )
   return (
-    <div className="ui statistic">
-      <div className="value">{value}</div>
-      <div className="label">
+    <div className="statistic-unit">
+      <h1 className="display-3">{value}</h1>
+      <p>
         {
           minutes ?
           <i className="minutes">minutes</i> :
@@ -460,9 +478,24 @@ const StatsUnit = ({ hours, unit }) => {
         }
         {' '}
         {unit}
-      </div>
+      </p>
     </div>
   )
+  // return (
+  //   <h2 className="display-3">
+  //     {value}
+  //     <br/>
+  //     <small className="text-muted">
+  //       {
+  //         minutes ?
+  //         <i className="minutes">minutes</i> :
+  //         <i className="hours">hours</i>
+  //       }
+  //       {' '}
+  //       {unit}
+  //     </small>
+  //   </h2>
+  // )
 }
 
 const ShowAutocomplete = ({
@@ -568,7 +601,7 @@ const PickedPodcasts = ({
     style.display = 'block';
   }
   return (
-    <div className="selected" style={style}>
+    <div className="selected clearfix" style={style}>
       <h3><i>Your</i> Podcasts...</h3>
       <div className="your-podcasts">
         {
@@ -585,7 +618,7 @@ const PickedPodcasts = ({
       <div className="remove-all">
         <button
           type="button"
-          className="button ui remove-all"
+          className="btn remove-all"
           title="And start over..."
           onClick={onRemoveAll}
         >Remove All</button>
@@ -621,7 +654,7 @@ const Podcast = ({ podcast, onRemovePodcast, store }) => {
         <div className="actions">
           <button
             type="button"
-            className="ui button"
+            className="btn"
             onClick={e => onRemovePodcast(e, podcast)}
             >Remove</button>
         </div>
@@ -631,11 +664,11 @@ const Podcast = ({ podcast, onRemovePodcast, store }) => {
             params={{id: podcast.id, slug: podcast.slug}}
             store={store}
           >
-            <img src={imageURL} role="presentation"/>
+            <img src={imageURL} role="presentation" className="rounded"/>
           </Link>
         </div>
         <div className="meta">
-          <h4>
+          <h5>
             <Link
               title={podcast.name}
               view={views.podcast}
@@ -644,7 +677,7 @@ const Podcast = ({ podcast, onRemovePodcast, store }) => {
             >
               {podcast.name}
             </Link>
-          </h4>
+          </h5>
           { text }
         </div>
       </div>
