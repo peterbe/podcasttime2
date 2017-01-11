@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": false,
   "dependencies": {
-    "bootstrap": "4.0.0-alpha.6",
     "director": "1.2.8",
     "loadjs": "3.2.1",
     "mobx": "2.7.0",

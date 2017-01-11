@@ -123,6 +123,7 @@ const Metadata = ({
   thumb,
   total_seconds,
   times_picked,
+  latest_episode,
   last_fetch,
   modified,
   episodeCount,
@@ -162,6 +163,11 @@ const Metadata = ({
             <dd className="col-sm-8">{ last_fetch ?
               <FormattedRelative value={last_fetch}/> :
               <FormattedRelative value={modified}/>
+            }</dd>
+            <dt className="col-sm-4">Last episode</dt>
+            <dd className="col-sm-8">{ latest_episode ?
+              <FormattedRelative value={latest_episode}/> :
+              <span>none</span>
             }</dd>
           </dl>
         </div>

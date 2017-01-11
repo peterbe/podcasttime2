@@ -10,8 +10,6 @@ import Podcast from './Podcast'
 import Podcasts from './Podcasts'
 import About from './About'
 
-import 'bootstrap/dist/css/bootstrap.css';
-
 //misc
 import {
   equalArrays,
@@ -27,6 +25,7 @@ const views = {
       updateDocumentTitle(null)
       store.app.picked = []
       store.app.pickedStats = null
+      store.app.pickedStatsEpisodes = null
       store.app.searchResults = []
       store.app.searchHighlight = -1
     }

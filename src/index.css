@@ -129,11 +129,23 @@ h1.ui.header {
 .header h2 {
     font-size: 0.9em;
 }
+
+.container {
+  width: auto;
+  max-width: 680px;
+  padding: 0 15px;
+}
+
+
 /* Desktop */
 @media (min-width:1025px) {
     /*.header h1 {
         float: left;
     }*/
+    .container {
+        max-width: 1145px;
+    }
+
     .header h2 {
         /*float: right;*/
         font-size: 1.3em;

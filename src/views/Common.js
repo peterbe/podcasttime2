@@ -93,7 +93,7 @@ export const Pagination = ({
   }
 
   const current = (number, pages) => {
-    return `Page ${number} or ${pages}`
+    return `Page ${number} of ${pages}`
   }
 
   let nextLink = null

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { observer, inject } from 'mobx-react';
 import { Link } from 'mobx-router';
 import views from '../views';
-import { FormattedNumber } from 'react-intl'
+import { FormattedNumber, FormattedRelative } from 'react-intl'
 import './Home.css'
 import magnify from './magnify.svg'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
@@ -303,8 +303,9 @@ class Home extends Component {
       picked,
       pickedStats,
       pickedStatsEpisodes,
-     } = store.app
+    } = store.app
 
+    let style = {}
     let podcasts = null
     if (picked.length) {
       podcasts = <PickedPodcasts
@@ -313,10 +314,13 @@ class Home extends Component {
         onRemovePodcast={this.onRemovePodcast}
         onRemoveAll={this.onRemoveAll}
       />
+    } else {
+      // When you haven't picked any add a margin over the search form
+      style.marginTop = 100
     }
 
     return (
-      <div>
+      <div style={style}>
         {/* <h3 className="ui dixviding header center aligned">How Much Time Do <i>Your</i> Podcasts Take To Listen To?</h3> */}
         <h3>Type to search for the podcasts <i>you</i> listen to</h3>
 
@@ -577,10 +581,23 @@ const AutocompleteResult = ({
             </span>
             : <span>?? episodes</span>
           }
+          <br/>
+          <ShowLatestEpisode value={result.latest_episode}/>
         </p>
       </div>
     </ReactCSSTransitionGroup>
 
+  )
+}
+
+const ShowLatestEpisode = ({ value }) => {
+  if (!value) {
+    return null
+  }
+  return (
+    <span>
+      Last episode: <FormattedRelative value={value}/>
+    </span>
   )
 }
 
@@ -618,7 +635,7 @@ const PickedPodcasts = ({
       <div className="remove-all">
         <button
           type="button"
-          className="btn remove-all"
+          className="btn btn-secondary remove-all"
           title="And start over..."
           onClick={onRemoveAll}
         >Remove All</button>
@@ -635,7 +652,8 @@ const Podcast = ({ podcast, onRemovePodcast, store }) => {
       <p>
         <FormattedNumber value={podcast.episodes}/> episodes,
         {' '}
-        about <FormattedTime hours={podcast.hours}/>.
+        about <FormattedTime hours={podcast.hours}/>.<br/>
+        <ShowLatestEpisode value={podcast.latest_episode}/>
       </p>
     )
   }
@@ -654,7 +672,7 @@ const Podcast = ({ podcast, onRemovePodcast, store }) => {
         <div className="actions">
           <button
             type="button"
-            className="btn"
+            className="btn btn-secondary"
             onClick={e => onRemovePodcast(e, podcast)}
             >Remove</button>
         </div>
