@@ -5,6 +5,7 @@ import views from '../views';
 import {
   RippleCentered,
   FormattedDuration,
+  ShowServerResponseError,
  } from './Common'
 import {
   FormattedRelative,
@@ -35,11 +36,17 @@ class Podcast extends Component {
 
   render() {
 
-    const { store } = this.props;
-    const { podcast, isFetching } = store.app
+    const { store } = this.props
+    const {
+      podcast,
+      isFetching,
+      serverResponseError,
+     } = store.app
 
     return (
       <div className="">
+
+        <ShowServerResponseError error={serverResponseError}/>
 
         { isFetching ? <RippleCentered scale={2}/> : null }
         { podcast && podcast._updating ? <p>Updating right now...</p> : null }

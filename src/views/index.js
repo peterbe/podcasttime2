@@ -28,6 +28,7 @@ const views = {
       store.app.pickedStatsEpisodes = null
       store.app.searchResults = []
       store.app.searchHighlight = -1
+      store.app.serverResponseError = null
     }
   }),
   home_found: new Route({
@@ -43,18 +44,31 @@ const views = {
           store.app.isFetching = true
           let url = `/api/podcasttime/find?ids=${idsJoined}`
           fetch(url)
-          .then(r => r.json())
+          .then(r => {
+            if (r.status !== 200) {
+              store.app.serverResponseError = r
+            } else {
+              return r.json()
+            }
+          })
           .then(results => {
-            store.app.picked = results.items
-            store.app.isSearching = false
+            if (results) {
+              store.app.picked = results.items
+              store.app.isSearching = false
+            }
           })
         }
         let url = `/api/podcasttime/stats?ids=${idsJoined}`
         fetch(url)
-        .then(r => r.json())
+        .then(r => {
+          if (r.status !== 200) {
+            store.app.serverResponseError = r
+          } else {
+            return r.json()
+          }
+        })
         .then(results => {
           store.app.pickedStats = results
-
           url = `/api/podcasttime/stats/episodes?ids=${ids}`
           fetch(url)
           .then(r => r.json())
@@ -89,11 +103,19 @@ const views = {
       }
       store.app.isFetching = true
       fetch(`/api/podcasttime/picks/data/?page=${page}`)
-      .then(r => r.json())
+      .then(r => {
+        if (r.status !== 200) {
+          store.app.serverResponseError = r
+        } else {
+          return r.json()
+        }
+      })
       .then(picks => {
         // store.app.page = page
-        store.app.isFetching = false
-        store.app.setPicks(picks, page)
+        if (picks) {
+          store.app.isFetching = false
+          store.app.setPicks(picks, page)
+        }
       })
     },
     onParamsChange: (route, params, store) => {
@@ -111,18 +133,27 @@ const views = {
         store.app.isFetching = true
         const url = `/api/podcasttime/podcasts/data/${params.id}/${params.slug}`
         fetch(url)
-        .then(r => r.json())
+        .then(r => {
+          if (r.status !== 200) {
+            store.app.serverResponseError = r
+            store.app.isFetching = false
+          } else {
+            return r.json()
+          }
+        })
         .then(podcast => {
-          store.app.setPodcast(podcast)
-          updateDocumentTitle(podcast.name)
-          store.app.isFetching = false
-          if (podcast._updating) {
-            if (attempts < 4) {
-              setTimeout(() => {
-                views.podcast.onEnter(
-                  route, params, store, queryParams, attempts + 1
-                )
-              }, 10 * 1000)
+          if (podcast) {
+            store.app.setPodcast(podcast)
+            updateDocumentTitle(podcast.name)
+            store.app.isFetching = false
+            if (podcast._updating) {
+              if (attempts < 4) {
+                setTimeout(() => {
+                  views.podcast.onEnter(
+                    route, params, store, queryParams, attempts + 1
+                  )
+                }, 10 * 1000)
+              }
             }
           }
         })
@@ -150,11 +181,19 @@ const views = {
         url += `&search=${store.app.podcastsSearch}`
       }
       fetch(url)
-      .then(r => r.json())
+      .then(r => {
+        if (r.status !== 200) {
+          store.app.serverResponseError = r
+        } else {
+          return r.json()
+        }
+      })
       .then(podcasts => {
-        store.app.setPodcasts(podcasts, page)
-        store.app.isFetching = false
-        document.querySelector('.page-number-header').scrollIntoView()
+        if (podcasts) {
+          store.app.setPodcasts(podcasts, page)
+          store.app.isFetching = false
+          document.querySelector('.page-number-header').scrollIntoView()
+        }
       })
     },
     onParamsChange: (route, params, store, queryParams) => {

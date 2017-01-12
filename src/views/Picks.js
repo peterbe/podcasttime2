@@ -2,15 +2,20 @@ import React, {Component} from 'react';
 import {observer, inject} from 'mobx-react';
 import {Link} from 'mobx-router';
 import views from '../views';
-import { Pagination } from './Common'
+import { Pagination, ShowServerResponseError } from './Common'
 import './picks.css'
 
 
 class Picks extends Component {
   render() {
 
-    const {store} = this.props;
-    const { picks, isFetching, page } = store.app
+    const { store } = this.props
+    const {
+      picks,
+      isFetching,
+      page,
+      serverResponseError,
+     } = store.app
 
     let items = null
     if (!isFetching && picks) {
@@ -35,6 +40,7 @@ class Picks extends Component {
         <h3>Page {page}</h3>
 
         { isFetching ? <h4>Fetching...</h4> : null }
+        <ShowServerResponseError error={serverResponseError}/>
 
         { items }
       </div>

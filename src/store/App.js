@@ -3,6 +3,7 @@ import {extendObservable, action} from 'mobx';
 class AppStore {
   constructor() {
     extendObservable(this, {
+      serverResponseError: null,
       isSearching: false,
       search: '',
       searchResults: null,

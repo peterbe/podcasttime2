@@ -2,7 +2,11 @@ import React, {Component} from 'react';
 import {observer,inject} from 'mobx-react';
 import {Link} from 'mobx-router';
 import views from '../views';
-import { RippleCentered, Pagination } from './Common'
+import {
+  RippleCentered,
+  Pagination,
+  ShowServerResponseError,
+} from './Common'
 import {
   FormattedNumber,
   FormattedRelative,
@@ -13,8 +17,14 @@ import './Podcasts.css'
 class Podcasts extends Component {
 
   render() {
-    const { store } = this.props;
-    const { podcasts, isFetching, page, podcastsSearch } = store.app
+    const { store } = this.props
+    const {
+      podcasts,
+      isFetching,
+      page,
+      podcastsSearch,
+      serverResponseError,
+     } = store.app
 
     let groups = []
     if (podcasts) {
@@ -41,6 +51,8 @@ class Podcasts extends Component {
           search={podcastsSearch}
           store={store}
         />
+
+        <ShowServerResponseError error={serverResponseError}/>
 
         { isFetching ? <RippleCentered scale={2}/> : null }
         { podcasts ?

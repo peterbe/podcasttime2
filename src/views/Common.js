@@ -162,3 +162,29 @@ export const Pagination = ({
     </nav>
   )
 }
+
+
+export const ShowServerResponseError = ({ error }) => {
+  if (!error) {
+    return null
+  }
+  return (
+    <div className="alert alert-danger" role="alert">
+      <h2 className="alert-heading">Server Response Error :(</h2>
+      <h5>
+        Sadly, an error happened <b>trying to talk to the server</b>.
+      </h5>
+      <p>
+        Hopefully, simply refreshing the page might solve it.
+      </p>
+      <dl className="row">
+        <dt className="col-sm-3">URL</dt>
+        <dd className="col-sm-9"><code>{error.url}</code></dd>
+        <dt className="col-sm-3">Status Code</dt>
+        <dd className="col-sm-9"><code>{error.status}</code></dd>
+        <dt className="col-sm-3">Status Text</dt>
+        <dd className="col-sm-9"><code>{error.statusText}</code></dd>
+      </dl>
+    </div>
+  )
+}

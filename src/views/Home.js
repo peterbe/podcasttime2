@@ -7,6 +7,7 @@ import './Home.css'
 import magnify from './magnify.svg'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import loadJS from 'loadjs'
+import { ShowServerResponseError } from './Common'
 
 
 class Home extends Component {
@@ -303,6 +304,7 @@ class Home extends Component {
       picked,
       pickedStats,
       pickedStatsEpisodes,
+      serverResponseError,
     } = store.app
 
     let style = {}
@@ -321,10 +323,9 @@ class Home extends Component {
 
     return (
       <div style={style}>
-        {/* <h3 className="ui dixviding header center aligned">How Much Time Do <i>Your</i> Podcasts Take To Listen To?</h3> */}
-        <h3>Type to search for the podcasts <i>you</i> listen to</h3>
+        <h4>Type to search for the podcasts <i>you</i> listen to</h4>
 
-        <form className="clearfixxxx" onSubmit={this.onSubmit}
+        <form className="" onSubmit={this.onSubmit}
           style={{marginBottom: 30}}
           >
           <ReactCSSTransitionGroup
@@ -354,6 +355,7 @@ class Home extends Component {
               />
             </div>
           </ReactCSSTransitionGroup>
+          <ShowServerResponseError error={serverResponseError}/>
           { podcasts }
           { pickedStats ?
             <PodcastStats
