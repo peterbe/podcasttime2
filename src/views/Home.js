@@ -57,7 +57,13 @@ class Home extends Component {
       method: 'POST',
       body: formData
     })
-    .then(r => r.json())
+    .then(r => {
+      if (r.status !== 200) {
+        store.app.serverResponseError = r
+      } else {
+        return r.json()
+      }
+    })
     .then(response => {
       sessionStorage.setItem('picks', response.session_key)
     })
@@ -118,23 +124,34 @@ class Home extends Component {
         let url = `/api/podcasttime/find?q=${search}`
         store.app.isSearching = true
         fetch(url, {
-          credentials: 'include',
+          credentials: 'include',  // XXX WHY DO I HAVE THIS?
         })
-        .then(r => r.json())
+        .then(r => {
+          if (r.status !== 200) {
+            store.app.serverResponseError = r
+            store.app.isSearching = false
+          } else {
+            return r.json()
+          }
+        })
         .then(results => {
-          store.app.isSearching = false
-          // perhaps the user has quickly changed their mind
-          if (store.app.search) {
-            if (store.app.search === results.q) {
-              const ids = store.app.picked.map(p => p.id)
-              store.app.searchResults = results.items.filter(item => {
-                return !ids.includes(item.id)
-              })
+          if (results) {
+            store.app.isSearching = false
+            // perhaps the user has quickly changed their mind
+            if (store.app.search) {
+              if (store.app.search === results.q) {
+                const ids = store.app.picked.map(p => p.id)
+                store.app.searchResults = results.items.filter(item => {
+                  return !ids.includes(item.id)
+                })
+                store.app.searchResultsTotal = results.total
+              }
+              this._lookforPendingResults(results)
+            } else if (store.app.searchResults && store.app.searchResults.length) {
+              store.app.searchResults = null
+              store.app.searchResultsTotal = null
+              store.app.searchHighlight = -1
             }
-            this._lookforPendingResults(results)
-          } else if (store.app.searchResults && store.app.searchResults.length) {
-            store.app.searchResults = null
-            store.app.searchHighlight = -1
           }
         })
       }, 200)
@@ -172,8 +189,17 @@ class Home extends Component {
     let ids = allPendingIds.join(',')
     let url = `/api/podcasttime/find?ids=${ids}`
     fetch(url)
-    .then(r => r.json())
+    .then(r => {
+      if (r.status !== 200) {
+        store.app.serverResponseError = r
+      } else {
+        return r.json()
+      }
+    })
     .then(results => {
+      if (!results) {
+        return
+      }
       results.items.forEach(item => {
         if (item.last_fetch) {
           store.app.pendingPodcasts = store.app.pendingPodcasts.filter(p => {
@@ -252,20 +278,30 @@ class Home extends Component {
         let url = `/api/podcasttime/find?q=${store.app.search}&submitted=true`
         store.app.isSearching = true
         fetch(url)
-        .then(r => r.json())
+        .then(r => {
+          if (r.status !== 200) {
+            store.app.serverResponseError = r
+            store.app.isSearching = false
+          } else {
+            return r.json()
+          }
+        })
         .then(results => {
-          store.app.isSearching = false
-          if (store.app.search) {
-            const ids = store.app.picked.map(p => p.id)
-            store.app.searchResults = results.items.filter(item => {
-              return !ids.includes(item.id)
-            })
+          if (results) {
+            store.app.isSearching = false
+            if (store.app.search) {
+              const ids = store.app.picked.map(p => p.id)
+              store.app.searchResults = results.items.filter(item => {
+                return !ids.includes(item.id)
+              })
+              store.app.searchResultsTotal = results.total
 
-            this._lookforPendingResults(results)
+              this._lookforPendingResults(results)
 
-          } else if (store.app.searchResults && store.app.searchResults.length) {
-            store.app.searchResults = null
-            store.app.searchHighlight = -1
+            } else if (store.app.searchResults && store.app.searchResults.length) {
+              store.app.searchResults = null
+              store.app.searchHighlight = -1
+            }
           }
         })
       }
@@ -281,6 +317,7 @@ class Home extends Component {
     store.app.picked.push(podcast)
     let ids = store.app.picked.map(p => p.id).sort()
     store.app.searchResults = []
+    store.app.searchResultsTotal = null
     store.app.search = ''
     store.app.searchHighlight = -1
 
@@ -299,6 +336,7 @@ class Home extends Component {
       search,
       isSearching,
       searchResults,
+      searchResultsTotal,
       searchHighlight,
       picked,
       pickedStats,
@@ -333,18 +371,21 @@ class Home extends Component {
             transitionAppearTimeout={600}
             transitionEnter={false}
             transitionLeave={false}>
-            <div className="xicon xinput ac-wrapper">
-                <input
-                  type="search"
-                  ref="q"
-                  value={search}
-                  name="search"
-                  className="form-control form-control-lg"
-                  placeholder="Search..."
-                  onKeyDown={this.onKeyDownSearch}
-                  onChange={this.onChangeSearch}
-                />
-              <i className="search icon"></i>
+            <div className="ac-wrapper">
+              <input
+                type="search"
+                ref="q"
+                value={search}
+                name="search"
+                className="form-control form-control-lg"
+                placeholder="Search..."
+                onKeyDown={this.onKeyDownSearch}
+                onChange={this.onChangeSearch}
+              />
+              <ShowSearchResultsTotal
+                isSearching={isSearching}
+                total={searchResultsTotal}
+              />
               <ShowAutocomplete
                 search={search}
                 isSearching={isSearching}
@@ -373,6 +414,43 @@ class Home extends Component {
 
 export default inject('store',)(observer(Home))
 
+
+const ShowSearchResultsTotal = ({ total, isSearching }) => {
+  if (total === null && !isSearching) {
+    return null
+  }
+  let className = 'badge badge-pill badge-primary'
+  let text = 'searching...'
+  if (total !== null) {
+    if (total === 1) {
+      text = '1 found!'
+    } else if (total === 0) {
+      text = '0 found :('
+    } else {
+      text = (
+        <span>
+          <FormattedNumber value={total}/> found
+        </span>
+      )
+    }
+    if (total === 0) {
+      className = 'badge badge-pill badge-danger'
+    } else if (total > 10 && total < 100) {
+      className = 'badge badge-pill badge-info'
+    } else if (total < 10) {
+      className = 'badge badge-pill badge-success'
+    }
+  }
+
+  return (
+    <span
+      className={className}
+      style={{position: 'absolute', right: 10, top: 17}}
+      >
+      { text }
+    </span>
+  )
+}
 
 const PodcastStats = ({ stats }) => {
   return (

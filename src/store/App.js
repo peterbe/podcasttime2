@@ -7,6 +7,7 @@ class AppStore {
       isSearching: false,
       search: '',
       searchResults: null,
+      searchResultsTotal: null,
       searchHighlight: -1,
       picked: [],
       pickedStats: null,
