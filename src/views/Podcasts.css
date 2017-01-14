@@ -1,3 +1,7 @@
 .card-deck {
     margin-bottom: 30px;
 }
+
+.card-deck .card.podcast {
+    max-width: 351px;
+}

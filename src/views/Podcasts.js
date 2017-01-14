@@ -6,6 +6,7 @@ import {
   RippleCentered,
   Pagination,
   ShowServerResponseError,
+  InterceptableLink,
 } from './Common'
 import {
   FormattedNumber,
@@ -143,7 +144,6 @@ class PodcastCard extends Component {
 
   onAddThis(event) {
     event.preventDefault()
-    // console.log("ADD ", this.props.podcast);
     const { store, podcast } = this.props
     let ids = store.app.picked.map(p => p.id)
     if (!ids.includes(podcast.id)) {
@@ -162,18 +162,20 @@ class PodcastCard extends Component {
     let updateDate = podcast.last_fetch ? podcast.last_fetch : podcast.modified
 
     return (
-      <div className="card">
-        <Link
+      <div className="card podcast">
+        <InterceptableLink
           view={views.podcast}
           params={{id: podcast.id, slug: podcast.slug}}
           store={store}
+          onClick={e => {
+            store.app.podcast = podcast
+          }}
         >
-        {
-          podcast.image ?
-          <img src={podcast.image} className="card-img-top" role="presentation"/> :
-          <img src="/static/images/no-image.png" className="card-img-top" role="presentation"/>
-         }
-       </Link>
+          <img
+            src={podcast.thumbnail_348 ? podcast.thumbnail_348 : '/static/images/no-image.png'}
+            className="card-img-top"
+            role="presentation"/>
+       </InterceptableLink>
         <div className="card-block">
           <h4 className="card-title">
             <Link
@@ -187,8 +189,8 @@ class PodcastCard extends Component {
           </h4>
           <p className="card-text">
             <PodcastDescription
-              episodeCount={podcast.episode_count}
-              episodeHours={Math.ceil(podcast.episode_seconds / 3600)}
+              episodeCount={podcast.episodes_count}
+              episodeHours={Math.ceil(podcast.episodes_seconds / 3600)}
             />
           </p>
           <p className="card-text">

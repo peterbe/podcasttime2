@@ -188,3 +188,46 @@ export const ShowServerResponseError = ({ error }) => {
     </div>
   )
 }
+
+
+export const InterceptableLink = ({
+  view,
+  className,
+  params = {},
+  queryParams = {},
+  store = {},
+  refresh = false,
+  style = {},
+  children,
+  title = children,
+  router = store.router,
+  onClick = null,
+}) => {
+  if (!router) {
+    return console.error('The router prop must be defined for a Link component to work!')
+  }
+  return (<a
+      style={style}
+      className={className}
+      onClick={e => {
+        if (onClick) {
+          if (onClick(e) === false) {
+            e.preventDefault()
+            return false
+          }
+        }
+        const middleClick = e.which === 2;
+        const cmdOrCtrl = (e.metaKey || e.ctrlKey);
+        const openinNewTab = middleClick || cmdOrCtrl;
+        const shouldNavigateManually = refresh || openinNewTab || cmdOrCtrl;
+
+        if (!shouldNavigateManually) {
+          e.preventDefault();
+          router.goTo(view, params, store, queryParams);
+        }
+      }}
+      href={view.replaceUrlParams(params, queryParams)}>
+      {title}
+    </a>
+  )
+}

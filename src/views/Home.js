@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
 import { observer, inject } from 'mobx-react';
-import { Link } from 'mobx-router';
 import views from '../views';
 import { FormattedNumber, FormattedRelative } from 'react-intl'
 import './Home.css'
 import magnify from './magnify.svg'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import loadJS from 'loadjs'
-import { ShowServerResponseError } from './Common'
+import { ShowServerResponseError, InterceptableLink } from './Common'
 
 
 class Home extends Component {
@@ -250,7 +249,7 @@ class Home extends Component {
           clearTimeout(this._findDebounce)
         }
         // nothing could be autocompleted, the form tried to submit
-        let url = `/api/podcasttime/find?q=${store.app.search}&itunes=true`
+        let url = `/api/podcasttime/find?q=${store.app.search}&submitted=true`
         store.app.isSearching = true
         fetch(url)
         .then(r => r.json())
@@ -552,8 +551,8 @@ const AutocompleteResult = ({
   onPickPodcast,
 }) => {
   let image = null
-  if (result.image_url) {
-    image = <img src={result.image_url} alt={result.name}/>
+  if (result.thumbnail_160) {
+    image = <img src={result.thumbnail_160} alt={result.name}/>
   }
   let className = 'ac-result clearfix'
   if (active) {
@@ -577,9 +576,9 @@ const AutocompleteResult = ({
           {
             result.last_fetch ?
             <span>
-              <FormattedNumber value={result.episodes}/> episodes,
+              <FormattedNumber value={result.episodes_count}/> episodes,
               {' '}
-              about <FormattedTime hours={result.hours}/>.
+              about <FormattedTime hours={result.total_hours}/>.
             </span>
             : <span>?? episodes</span>
           }
@@ -652,17 +651,18 @@ const Podcast = ({ podcast, onRemovePodcast, store }) => {
   if (podcast.last_fetch) {
     text = (
       <p>
-        <FormattedNumber value={podcast.episodes}/> episodes,
+        <FormattedNumber value={podcast.episodes_count}/> episodes,
         {' '}
-        about <FormattedTime hours={podcast.hours}/>.<br/>
+        about <FormattedTime hours={podcast.total_hours}/>.<br/>
         <ShowLatestEpisode value={podcast.latest_episode}/>
       </p>
     )
   }
-  let imageURL = podcast.image_url
+  let imageURL = podcast.thumbnail_160
   if (!imageURL) {
     imageURL = '/static/images/no-image.png'
   }
+
   return (
     <ReactCSSTransitionGroup
           transitionName="fadein"
@@ -679,24 +679,30 @@ const Podcast = ({ podcast, onRemovePodcast, store }) => {
             >Remove</button>
         </div>
         <div className="img">
-          <Link
+          <InterceptableLink
             view={views.podcast}
             params={{id: podcast.id, slug: podcast.slug}}
             store={store}
+            onClick={e => {
+              store.app.podcast = podcast
+            }}
           >
             <img src={imageURL} role="presentation" className="rounded"/>
-          </Link>
+          </InterceptableLink>
         </div>
         <div className="meta">
           <h5>
-            <Link
+            <InterceptableLink
               title={podcast.name}
               view={views.podcast}
               params={{id: podcast.id, slug: podcast.slug}}
               store={store}
+              onClick={e => {
+                store.app.podcast = podcast
+              }}
             >
               {podcast.name}
-            </Link>
+            </InterceptableLink>
           </h5>
           { text }
         </div>

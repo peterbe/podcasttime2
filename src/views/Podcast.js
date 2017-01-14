@@ -39,6 +39,7 @@ class Podcast extends Component {
     const { store } = this.props
     const {
       podcast,
+      podcastEpisodes,
       isFetching,
       serverResponseError,
      } = store.app
@@ -55,8 +56,7 @@ class Podcast extends Component {
           <div>
 
             <Metadata
-              {...podcast}
-              episodeCount={podcast.episodes_count}
+              podcast={podcast}
               />
             <div id="add-links">
               <AddLinks
@@ -65,10 +65,11 @@ class Podcast extends Component {
                 onAddThis={this.onAddThis}
                 />
             </div>
+
             <div id="episodes">
               <Episodes
                 store={store}
-                episodes={podcast.episodes}
+                episodes={podcastEpisodes}
                 />
             </div>
 
@@ -125,55 +126,36 @@ const AddLinks = ({ id, store, onAddThis }) => {
 }
 
 
-const Metadata = ({
-  name,
-  thumb,
-  total_seconds,
-  times_picked,
-  latest_episode,
-  last_fetch,
-  modified,
-  episodeCount,
-}) => {
+const Metadata = ({ podcast }) => {
   return (
     <div className="metadata">
       <div className="item row">
         <div className="image col-4">
-        {
-          thumb ?
           <img
             className="img-thumbnail"
             role="presentation"
             style={{float: 'left'}}
-            src={thumb.url}/> :
-          <img
-            className="img-thumbnail"
-            role="presentation"
-            style={{float: 'left'}}
-            src="/static/images/no-image.png"
-            width="300" height="300"/>
-        }
+            src={podcast.thumbnail_348 ? podcast.thumbnail_348 : '/static/images/no-image.png'}/>
         </div>
         <div className="content col-8">
-          <h1>Title: { name }</h1>
+          <h1>Title: { podcast.name }</h1>
           <dl className="row">
             <dt className="col-sm-4">Episodes</dt>
-            <dd className="col-sm-8"><FormattedNumber value={episodeCount} /></dd>
+            <dd className="col-sm-8"><FormattedNumber value={podcast.episodes_count} /></dd>
 
             <dt className="col-sm-4">Total amount of content</dt>
-            <dd className="col-sm-8"><FormattedDuration seconds={total_seconds}/></dd>
+            <dd className="col-sm-8"><FormattedDuration seconds={podcast.episodes_seconds}/></dd>
 
             <dt className="col-sm-4">Times picked</dt>
-            <dd className="col-sm-8"><FormattedNumber value={times_picked}/></dd>
+            <dd className="col-sm-8"><FormattedNumber value={podcast.times_picked}/></dd>
 
             <dt className="col-sm-4">Last updated</dt>
-            <dd className="col-sm-8">{ last_fetch ?
-              <FormattedRelative value={last_fetch}/> :
-              <FormattedRelative value={modified}/>
-            }</dd>
+            <dd className="col-sm-8">
+              <FormattedRelative value={podcast.last_fetch ? podcast.last_fetch : podcast.modified }/>
+            </dd>
             <dt className="col-sm-4">Last episode</dt>
-            <dd className="col-sm-8">{ latest_episode ?
-              <FormattedRelative value={latest_episode}/> :
+            <dd className="col-sm-8">{ podcast.latest_episode ?
+              <FormattedRelative value={podcast.latest_episode}/> :
               <span>none</span>
             }</dd>
           </dl>
@@ -184,6 +166,9 @@ const Metadata = ({
 }
 
 const Episodes = ({ episodes }) => {
+  if (!episodes) {
+    return null
+  }
   return (
     <table className="table table-sm">
       <thead>

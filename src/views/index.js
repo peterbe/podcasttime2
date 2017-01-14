@@ -128,10 +128,13 @@ const views = {
     onEnter: (route, params, store, queryParams, attempts = 0) => {
       if (store.app.podcast && store.app.podcast.id === params.id) {
         // A podcast has already been loaded.
+        console.log("No need to load podcast");
+        // console.log(store.app.podcast);
+        updateDocumentTitle(store.app.podcast.name)
         store.app.isFetching = false
       } else {
         store.app.isFetching = true
-        const url = `/api/podcasttime/podcasts/data/${params.id}/${params.slug}`
+        const url = `/api/podcasttime/find?ids=${params.id}`
         fetch(url)
         .then(r => {
           if (r.status !== 200) {
@@ -141,8 +144,9 @@ const views = {
             return r.json()
           }
         })
-        .then(podcast => {
-          if (podcast) {
+        .then(results => {
+          if (results) {
+            let podcast = results.items[0]
             store.app.setPodcast(podcast)
             updateDocumentTitle(podcast.name)
             store.app.isFetching = false
@@ -158,6 +162,23 @@ const views = {
           }
         })
       }
+
+      // load the episodes
+      const episodesUrl = `/api/podcasttime/podcasts/episodes/${params.id}`
+      fetch(episodesUrl)
+      .then(r => {
+        if (r.status !== 200) {
+          store.app.serverResponseError = r
+          store.app.isFetching = false
+        } else {
+          return r.json()
+        }
+      })
+      .then(result => {
+        if (result) {
+          store.app.podcastEpisodes = result.episodes
+        }
+      })
     },
     onParamsChange: (route, params, store, queryParams) => {
       return views.podcast.onEnter(route, params, store, queryParams)

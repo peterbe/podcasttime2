@@ -20,6 +20,7 @@ class AppStore {
       isFetching: false,
       page: 1,
       podcast: null,
+      podcastEpisodes: null,
       podcasts: null,
       podcastsSearch: null,
     })
