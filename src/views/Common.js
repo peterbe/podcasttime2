@@ -210,11 +210,9 @@ export const InterceptableLink = ({
       style={style}
       className={className}
       onClick={e => {
-        if (onClick) {
-          if (onClick(e) === false) {
-            e.preventDefault()
-            return false
-          }
+        if (onClick && onClick(e) === false) {
+          e.preventDefault()
+          return
         }
         const middleClick = e.which === 2;
         const cmdOrCtrl = (e.metaKey || e.ctrlKey);
