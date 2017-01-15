@@ -65,7 +65,24 @@ class Home extends Component {
       }
     })
     .then(response => {
-      sessionStorage.setItem('picks', response.session_key)
+      if (response) {
+        sessionStorage.setItem('picks', response.session_key)
+        let persistence = JSON.parse(
+          localStorage.getItem('picks') || '{}'
+        )
+        persistence[response.session_key] = {
+          date: new Date(),
+          podcasts: store.app.picked.map(p => {
+            return {
+              id: p.id,
+              name: p.name,
+              slug: p.slug,
+              thumbnail_160: p.thumbnail_160,
+            }
+          })
+        }
+        localStorage.setItem('picks', JSON.stringify(persistence))
+      }
     })
   }
 
@@ -360,7 +377,7 @@ class Home extends Component {
 
     return (
       <div style={style}>
-        <h4>Type to search for the podcasts <i>you</i> listen to</h4>
+        <h5>Search for the podcasts <i>you</i> listen to</h5>
 
         <form className="" onSubmit={this.onSubmit}
           style={{marginBottom: 30}}

@@ -9,10 +9,13 @@
   margin-bottom: 60px;
 }
 
-/*.header .sub-title {
-  margin-left: 20px;
-  font-size: 70%;
-}*/
+.container .mt-1 {
+    margin-bottom: 50px;
+}
+
+.sub-header {
+    font-size: 0.9rem;
+}
 
 .clearfix:before, .clearfix:after { content: " "; display: table; }
 .clearfix:after { clear: both; }
@@ -44,7 +47,7 @@ form select {
   display: none;
 }
 .selected .podcast {
-  border-bottom: 1px solid #efefef;
+  border-bottom: 1px solid #555;
   padding: 10px 0;
 }
 .selected .podcast .actions {

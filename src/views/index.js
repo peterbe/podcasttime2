@@ -9,6 +9,8 @@ import Picks from './Picks'
 import Podcast from './Podcast'
 import Podcasts from './Podcasts'
 import About from './About'
+// import PersistentPicks from './PersistentPicks'
+import MyPicks from './MyPicks'
 
 //misc
 import {
@@ -83,6 +85,36 @@ const views = {
       return views.home_found.onEnter(...args)
     }
   }),
+  my_picks: new Route({
+    path: '/picks/mine',
+    component: <MyPicks/>,
+    onEnter: (route, params, store, queryParams) => {
+      const picks = JSON.parse(
+        localStorage.getItem('picks'), '{}'
+      )
+      let picksList = []
+
+      // despite its pluralistic name, this is either null or a string
+      let currentPick = sessionStorage.getItem('picks')
+      // but current pick is only applicable if it's actually used
+      if (!store.app.picks) {
+        currentPick = null
+      }
+      let keys = []
+      if (picks) {
+        keys = Object.keys(picks)
+      }
+      keys.forEach(key => {
+        if (key !== currentPick) {
+          let data = picks[key]
+          data.key = key
+          picksList.push(data)
+        }
+      })
+      picksList.sort((a, b) => b.date - a.date)
+      store.app.persistentPicks = picksList
+    }
+  }),
   picks_home: new Route({
     path: '/picks',
     component: <Picks/>,
@@ -129,7 +161,6 @@ const views = {
       if (store.app.podcast && store.app.podcast.id === params.id) {
         // A podcast has already been loaded.
         console.log("No need to load podcast");
-        // console.log(store.app.podcast);
         updateDocumentTitle(store.app.podcast.name)
         store.app.isFetching = false
       } else {

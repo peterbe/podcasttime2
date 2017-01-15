@@ -34,8 +34,8 @@ class Picks extends Component {
     }
 
     return (
-      <div className="ui container">
-        <h2 className="ui dividing header center aligned">Picks</h2>
+      <div className="">
+        <h2 className="">Picks</h2>
         <p><b>Picks</b> are collections of podcasts that people have chosen.</p>
         <h3>Page {page}</h3>
 
@@ -56,7 +56,7 @@ const Pick = ({ pick, store }) => {
   return (
     <div
       className=""
-      style={{border: '1px solid #ccc', margin: 15, padding: 10}}>
+      style={{border: '1px solid #555', margin: 15, padding: 10}}>
       {
         pick.podcasts.map(podcast => {
           return <Podcast

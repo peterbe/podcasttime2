@@ -15,6 +15,9 @@ import store from './store'
 import views from './views'
 startRouter(views, store)
 
+// side components
+import PersistentPicks from './views/PersistentPicks'
+
 
 ReactDOM.render(
   <IntlProvider locale="en">
@@ -23,15 +26,16 @@ ReactDOM.render(
         <div className="container" style={{marginBottom: 100}}>
           <div className="mt-1">
             <h1><Link view={views.home} store={store}>Podcast Time</Link></h1>
-            <div className="sub header">
+            <h5 className="sub-header">
               How Much Time Do <i>Your</i> Podcasts Take To Listen To?
-            </div>
+            </h5>
           </div>
+          <PersistentPicks store={store}/>
           <MobxRouter/>
         </div>
 
         <footer className="footer">
-          <div className="container">
+          <div className="container" style={{textAlign: 'center'}}>
             <Link className="item" view={views.home} store={store}>Home</Link>
             {' • '}
             <Link className="item" view={views.picks} store={store}>Picks</Link>
