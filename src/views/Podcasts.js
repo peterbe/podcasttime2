@@ -224,8 +224,12 @@ const PodcastDescription = ({ episodeCount, episodeHours}) => {
   if (episodeCount) {
     return (
       <span>
-        <b><FormattedNumber value={episodeCount} /></b> episodes,{' '}
-        <b><FormattedNumber value={episodeHours} /></b> hours of content.
+        <b><FormattedNumber value={episodeCount} /></b> episodes,
+        {' '}
+        {
+          episodeHours ? <FormattedNumber value={episodeHours} /> : '???'
+        }
+        {' '} hours of content.
       </span>
     )
   } else {
