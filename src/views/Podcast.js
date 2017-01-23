@@ -42,7 +42,8 @@ class Podcast extends Component {
       podcastEpisodes,
       isFetching,
       serverResponseError,
-     } = store.app
+      podcastNotFound,
+    } = store.app
 
     return (
       <div className="">
@@ -52,6 +53,7 @@ class Podcast extends Component {
         { isFetching ? <RippleCentered scale={2}/> : null }
         { podcast && podcast._updating ? <p>Updating right now...</p> : null }
         { podcast && podcast._has_error ? <p>Last update failed.</p> : null }
+        { podcastNotFound ? <PodcastNotFound store={store}/> : null }
         { podcast ?
           <div>
 
@@ -83,6 +85,22 @@ class Podcast extends Component {
 
 export default inject('store',)(observer(Podcast))
 
+
+const PodcastNotFound = ({ store }) => {
+  return (
+    <div className="podcast-not-found">
+      <h2>Podcast Not Found</h2>
+      <Link
+        className="btn btn-secondary"
+        role="button"
+        view={views.home}
+        store={store}
+      >
+        Back to Home
+      </Link>
+    </div>
+  )
+}
 
 const AddLinks = ({ id, store, onAddThis }) => {
   let homeLink = (
@@ -141,7 +159,12 @@ const Metadata = ({ podcast }) => {
           <h1>Title: { podcast.name }</h1>
           <dl className="row">
             <dt className="col-sm-4">Episodes</dt>
-            <dd className="col-sm-8"><FormattedNumber value={podcast.episodes_count} /></dd>
+            <dd className="col-sm-8">
+              { podcast.episodes_count !== null ?
+                <FormattedNumber value={podcast.episodes_count} /> :
+                <i>currently unknown</i>
+              }
+            </dd>
 
             <dt className="col-sm-4">Total amount of content</dt>
             <dd className="col-sm-8"><FormattedDuration seconds={podcast.episodes_seconds}/></dd>

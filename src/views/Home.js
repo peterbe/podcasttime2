@@ -223,14 +223,16 @@ class Home extends Component {
             return p.id !== item.id
           })
           let matches = 0
-          store.app.searchResults = store.app.searchResults.map(result => {
-            if (result.id === item.id) {
-              matches++
-              return item
-            } else {
-              return result
-            }
-          })
+          if (store.app.searchResults) {
+            store.app.searchResults = store.app.searchResults.map(result => {
+              if (result.id === item.id) {
+                matches++
+                return item
+              } else {
+                return result
+              }
+            })
+          }
           store.app.picked = store.app.picked.map(picked => {
             if (picked.id === item.id) {
               return item
@@ -490,11 +492,8 @@ class BubblePlot extends Component {
 
     const containerWidth = document.querySelector('.container').clientWidth
     const { episodes } = this.props
-    // console.log('RENDER', episodes);
     loadJS(['https://cdn.plot.ly/plotly-latest.min.js'], {
       success: () => {
-        // console.log("ARGS",args);
-
         let data = []
         episodes.forEach(group => {
           if (group.episodes.length) {
@@ -671,9 +670,19 @@ const AutocompleteResult = ({
           {
             result.last_fetch ?
             <span>
-              <FormattedNumber value={result.episodes_count}/> episodes,
+              {
+                result.episodes_count ?
+                <FormattedNumber value={result.episodes_count}/> :
+                '??'
+              } episodes,
               {' '}
-              about <FormattedTime hours={result.total_hours}/>.
+              about
+              {' '}
+              {
+                result.total_hours !== null ?
+                <FormattedTime hours={result.total_hours}/> :
+                <em>currently unknown</em>
+              }.
             </span>
             : <span>?? episodes</span>
           }
@@ -743,7 +752,7 @@ const PickedPodcasts = ({
 
 const Podcast = ({ podcast, onRemovePodcast, store }) => {
   let text = <p>?? episodes</p>
-  if (podcast.last_fetch) {
+  if (podcast.last_fetch && podcast.episodes_count !== null) {
     text = (
       <p>
         <FormattedNumber value={podcast.episodes_count}/> episodes,

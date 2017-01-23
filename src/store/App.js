@@ -26,6 +26,8 @@ class AppStore {
       podcastsSearch: null,
 
       persistentPicks: [],
+
+      podcastNotFound: false,
     })
   }
 

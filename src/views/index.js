@@ -176,11 +176,14 @@ const views = {
           }
         })
         .then(results => {
-          if (results) {
+          if (results && results.length) {
             let podcast = results.items[0]
             store.app.setPodcast(podcast)
             updateDocumentTitle(podcast.name)
             store.app.isFetching = false
+            if (store.app.podcastNotFound) {
+              store.app.podcastNotFound = false
+            }
             if (podcast._updating) {
               if (attempts < 4) {
                 setTimeout(() => {
@@ -190,6 +193,9 @@ const views = {
                 }, 10 * 1000)
               }
             }
+          } else {
+            store.app.isFetching = false
+            store.app.podcastNotFound = true
           }
         })
       }
