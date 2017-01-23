@@ -25,7 +25,9 @@
     padding-top: 13px;
     color: #999;
 }
-
+b.outdated {
+    color: red;
+}
 .ac-result {
     padding: 6px;
 }

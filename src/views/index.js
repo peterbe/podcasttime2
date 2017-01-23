@@ -176,7 +176,7 @@ const views = {
           }
         })
         .then(results => {
-          if (results && results.length) {
+          if (results && results.items.length) {
             let podcast = results.items[0]
             store.app.setPodcast(podcast)
             updateDocumentTitle(podcast.name)

@@ -668,7 +668,12 @@ const AutocompleteResult = ({
         <p style={{marginLeft: 75}}>
           <b>{ result.name }</b><br/>
           {
-            result.last_fetch ?
+            result.last_fetch && result._outdated ?
+            <b className="outdated">Outdated!</b> :
+            null
+          }
+          {
+            result.last_fetch && !result._outdated ?
             <span>
               {
                 result.episodes_count ?
@@ -684,7 +689,7 @@ const AutocompleteResult = ({
                 <em>currently unknown</em>
               }.
             </span>
-            : <span>?? episodes</span>
+            : null
           }
           <br/>
           <ShowLatestEpisode value={result.latest_episode}/>
@@ -752,7 +757,7 @@ const PickedPodcasts = ({
 
 const Podcast = ({ podcast, onRemovePodcast, store }) => {
   let text = <p>?? episodes</p>
-  if (podcast.last_fetch && podcast.episodes_count !== null) {
+  if (podcast.last_fetch && podcast.episodes_count !== null && !podcast._outdated) {
     text = (
       <p>
         <FormattedNumber value={podcast.episodes_count}/> episodes,
@@ -761,6 +766,8 @@ const Podcast = ({ podcast, onRemovePodcast, store }) => {
         <ShowLatestEpisode value={podcast.latest_episode}/>
       </p>
     )
+  } else if (podcast._outdated) {
+    text = <b className="outdated">Outdated!</b>
   }
   let imageURL = podcast.thumbnail_160
   if (!imageURL) {
