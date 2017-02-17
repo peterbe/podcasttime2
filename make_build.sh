@@ -7,5 +7,5 @@ find . | grep '\.DS_Store' | xargs rm -f
 popd
 
 
-time yarn run build
+PUBLIC_URL="https://podcasttime-2916.kxcdn.com" yarn run build
 apack build.zip build
