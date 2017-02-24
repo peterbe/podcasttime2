@@ -477,15 +477,20 @@ const PodcastStats = ({ stats }) => {
       <StatsUnit hours={stats.per_day} unit="per day"/>
       <StatsUnit hours={stats.per_week} unit="per week"/>
       <StatsUnit hours={stats.per_month} unit="per month"/>
-      <p className="stats-dates">
-        Calculated based on episodes between
-        {' '}
-        <b><FormattedDate value={stats.min_date}/></b>
-        {' '}
-        and
-        {' '}
-        <b><FormattedDate value={stats.max_date}/></b>.
-      </p>
+      {
+        stats.min_date && stats.max_date ?
+        <p className="stats-dates">
+          Calculated based on episodes between
+          {' '}
+          <b><FormattedDate value={stats.min_date}/></b>
+          {' '}
+          and
+          {' '}
+          <b><FormattedDate value={stats.max_date}/></b>.
+        </p>
+        : null
+      }
+
     </div>
   )
 }

@@ -127,7 +127,8 @@ const views = {
     path: '/picks/:page',
     component: <Picks/>,
     onEnter: (route, params, store) => {
-      const page = params.page || 1
+      let page = params.page || 1
+      page = parseInt(page, 10)
       if (page > 1) {
         updateDocumentTitle(`Picks - page ${page}`)
       } else {
@@ -143,10 +144,21 @@ const views = {
         }
       })
       .then(picks => {
-        // store.app.page = page
         if (picks) {
           store.app.isFetching = false
           store.app.setPicks(picks, page)
+          setTimeout(() => {
+            let nextUrl = `/api/podcasttime/picks/data/?page=${page + 1}`
+            fetch(nextUrl)
+            .then(r => {
+              if (r.status === 200) {
+                return r.json()
+              }
+            })
+            .then(() => {
+              console.log('Preloaded', nextUrl);
+            })
+          }, 2000)
         }
       })
     },
@@ -240,7 +252,8 @@ const views = {
       if (queryParams && queryParams.search) {
         store.app.podcastsSearch = queryParams.search
       }
-      const page = params.page || 1
+      let page = params.page || 1
+      page = parseInt(page, 10)
       if (page > 1) {
         updateDocumentTitle(`Podcasts - Page ${page}`)
       } else {
@@ -263,6 +276,20 @@ const views = {
           store.app.setPodcasts(podcasts, page)
           store.app.isFetching = false
           document.querySelector('.page-number-header').scrollIntoView()
+          if (!store.app.podcastsSearch) {
+            setTimeout(() => {
+              let nextUrl = `/api/podcasttime/podcasts/data/?page=${page + 1}`
+              fetch(nextUrl)
+              .then(r => {
+                if (r.status === 200) {
+                  return r.json()
+                }
+              })
+              .then(() => {
+                console.log('Preloaded', nextUrl);
+              })
+            }, 2000)
+          }
         }
       })
     },
