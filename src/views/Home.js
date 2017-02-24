@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { observer, inject } from 'mobx-react';
 import views from '../views';
-import { FormattedNumber, FormattedRelative } from 'react-intl'
+import { FormattedNumber, FormattedRelative, FormattedDate } from 'react-intl'
 import './Home.css'
 import magnify from './magnify.svg'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
@@ -473,10 +473,19 @@ const ShowSearchResultsTotal = ({ total, isSearching }) => {
 
 const PodcastStats = ({ stats }) => {
   return (
-    <div className="statsxxx clearfix">
+    <div className="clearfix statistics-units">
       <StatsUnit hours={stats.per_day} unit="per day"/>
       <StatsUnit hours={stats.per_week} unit="per week"/>
       <StatsUnit hours={stats.per_month} unit="per month"/>
+      <p className="stats-dates">
+        Calculated based on episodes between
+        {' '}
+        <b><FormattedDate value={stats.min_date}/></b>
+        {' '}
+        and
+        {' '}
+        <b><FormattedDate value={stats.max_date}/></b>.
+      </p>
     </div>
   )
 }
@@ -548,24 +557,6 @@ const StatsUnit = ({ hours, unit }) => {
   }
   let value = hours.toFixed(1)
 
-//   <h3>
-//   Fancy display heading
-//   <small class="text-muted">With faded secondary text</small>
-// </h3>
-  // return (
-  //   <div className="ui statistic">
-  //     <div className="value">{value}</div>
-  //     <div className="label">
-  //       {
-  //         minutes ?
-  //         <i className="minutes">minutes</i> :
-  //         <i className="hours">hours</i>
-  //       }
-  //       {' '}
-  //       {unit}
-  //     </div>
-  //   </div>
-  // )
   return (
     <div className="statistic-unit">
       <h1 className="display-3">{value}</h1>
@@ -580,21 +571,6 @@ const StatsUnit = ({ hours, unit }) => {
       </p>
     </div>
   )
-  // return (
-  //   <h2 className="display-3">
-  //     {value}
-  //     <br/>
-  //     <small className="text-muted">
-  //       {
-  //         minutes ?
-  //         <i className="minutes">minutes</i> :
-  //         <i className="hours">hours</i>
-  //       }
-  //       {' '}
-  //       {unit}
-  //     </small>
-  //   </h2>
-  // )
 }
 
 const ShowAutocomplete = ({
