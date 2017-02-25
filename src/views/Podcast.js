@@ -167,7 +167,7 @@ const Metadata = ({ podcast }) => {
             </dd>
 
             <dt className="col-sm-4">Total amount of content</dt>
-            <dd className="col-sm-8"><FormattedDuration seconds={podcast.episodes_seconds}/></dd>
+            <dd className="col-sm-8"><FormattedDuration seconds={podcast.total_hours * 3600}/></dd>
 
             <dt className="col-sm-4">Times picked</dt>
             <dd className="col-sm-8"><FormattedNumber value={podcast.times_picked}/></dd>
