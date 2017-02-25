@@ -11,6 +11,7 @@ import Podcasts from './Podcasts'
 import About from './About'
 // import PersistentPicks from './PersistentPicks'
 import MyPicks from './MyPicks'
+import AllPodcasts from './AllPodcasts'
 
 //misc
 import {
@@ -319,6 +320,10 @@ const views = {
       })
     }
   }),
+  all_table: new Route({
+    path: '/all',
+    component: <AllPodcasts/>,
+  })
 }
 
 export default views;
