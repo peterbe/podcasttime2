@@ -171,13 +171,11 @@ const views = {
     path: '/podcasts/:id/:slug',
     component: <Podcast/>,
     onEnter: (route, params, store, queryParams, attempts = 0, updating = false) => {
-      // console.log("onEnter", attempts, updating);
       if (store.app.podcast && store.app.podcast.id === params.id && !updating) {
         // A podcast has already been loaded.
         console.log("No need to load podcast");
         updateDocumentTitle(store.app.podcast.name)
         store.app.isFetching = false
-        // console.log("Current updating?", store.app.podcast._updating);
         if (store.app.podcast._updating) {
           console.log('Will try to update');
           setTimeout(() => {
