@@ -69,10 +69,18 @@ class Podcast extends Component {
             </div>
 
             <div id="episodes">
-              <Episodes
-                store={store}
-                episodes={podcastEpisodes}
-                />
+              {
+                podcastEpisodes && podcastEpisodes.length && podcastEpisodes[0].title ?
+                <Episodes
+                  store={store}
+                  episodes={podcastEpisodes}
+                  />
+                :
+                <EpisodesWithoutTitles
+                  store={store}
+                  episodes={podcastEpisodes}
+                  />
+              }
             </div>
 
           </div>
@@ -153,10 +161,12 @@ const Metadata = ({ podcast }) => {
             className="img-thumbnail"
             role="presentation"
             style={{float: 'left'}}
-            src={podcast.thumbnail_348 ? podcast.thumbnail_348 : '/static/images/no-image.png'}/>
+            src={podcast.thumbnail_348 ? podcast.thumbnail_348 : process.env.PUBLIC_URL + '/static/images/no-image.png'}/>
         </div>
         <div className="content col-8">
-          <h1>Title: { podcast.name }</h1>
+          <h1>
+            { podcast.name }
+          </h1>
           <dl className="row">
             <dt className="col-sm-4">Episodes</dt>
             <dd className="col-sm-8">
@@ -189,6 +199,34 @@ const Metadata = ({ podcast }) => {
 }
 
 const Episodes = ({ episodes }) => {
+  return (
+    <ul className="list-unstyled">
+      {
+        episodes.map(episode => {
+          return (
+            <li className="media" key={episode.guid}>
+              {/* <img className="d-flex mr-3" src={process.env.PUBLIC_URL + '/static/images/play-64x64.png'} alt="Play"/> */}
+              <div className="media-body">
+                <h4 className="mt-0 mb-1">{ episode.title }</h4>
+                <p className="episode-metadata">
+                  Published:{' '}
+                  <FormattedDate value={episode.published}/>{' '}
+                  (<FormattedRelative value={episode.published} />)
+                  {'   Duration: '}
+                  <FormattedDuration seconds={episode.duration} />
+                </p>
+                <p>{ episode.summary }</p>
+              </div>
+            </li>
+          )
+        })
+      }
+
+    </ul>
+  )
+}
+
+const EpisodesWithoutTitles = ({ episodes }) => {
   if (!episodes) {
     return null
   }

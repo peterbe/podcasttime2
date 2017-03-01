@@ -7,3 +7,16 @@
 #episodes {
     margin-top: 60px;
 }
+
+#episodes
+p.episode-metadata {
+    font-weight: 'bold';
+    color: #aaa;
+    font-size: 90%;
+    margin-bottom: 3px;
+}
+
+#episodes
+.media-body {
+    margin-bottom: 20px;
+}
