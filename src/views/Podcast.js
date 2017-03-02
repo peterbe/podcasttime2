@@ -167,6 +167,18 @@ const Metadata = ({ podcast }) => {
           <h1>
             { podcast.name }
           </h1>
+          {
+            podcast.subtitle ?
+            <h5>{ podcast.subtitle }</h5>
+            : null
+          }
+          {
+            podcast.link ?
+            <a href={podcast.link} target="_blank" rel="noopener">
+              { podcast.link }
+            </a>
+            : null
+          }
           <dl className="row">
             <dt className="col-sm-4">Episodes</dt>
             <dd className="col-sm-8">
@@ -210,12 +222,24 @@ const Episodes = ({ episodes }) => {
                 <h4 className="mt-0 mb-1">{ episode.title }</h4>
                 <p className="episode-metadata">
                   Published:{' '}
-                  <FormattedDate value={episode.published}/>{' '}
-                  (<FormattedRelative value={episode.published} />)
-                  {'   Duration: '}
+                  <abbr title={episode.published} style={{marginRight: 6}}>
+                    <FormattedRelative value={episode.published} />
+                  </abbr>
+                  {'  Duration: '}
                   <FormattedDuration seconds={episode.duration} />
                 </p>
-                <p>{ episode.summary }</p>
+                {
+                  episode.summary ?
+                  <p className="episode-summary">
+                    {
+                      episode.summary.split('\n').map((item, key) => (
+                        <span key={key}>{item}<br/></span>
+                      ))
+                    }
+                  </p>
+                  :
+                  null
+                }
               </div>
             </li>
           )

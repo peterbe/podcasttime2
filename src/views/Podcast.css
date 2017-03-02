@@ -20,3 +20,8 @@ p.episode-metadata {
 .media-body {
     margin-bottom: 20px;
 }
+
+#episodes
+p.episode-summary {
+    line-height: 20px;
+}
