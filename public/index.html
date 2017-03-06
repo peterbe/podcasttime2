@@ -3,21 +3,35 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Open Graph markup (Facebook, Pinterest) -->
+
     <meta property="og:title" content="Podcast Time" />
     <meta property="og:url" content="https://podcasttime.io" />
     <meta property="og:image" content="%PUBLIC_URL%/static/screenshot.png" />
-    <meta property="og:description" content="%OG_DESCRIPTION%" />
-    <meta property="og:site_name" content="Song Search" />
+    <meta property="og:description" content="How Much Time Do Your Podcasts Take To Listen To?" />
+    <meta property="og:site_name" content="Podcast Time" />
 
-    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
-    <link rel="icon" type="image/png" href="%PUBLIC_URL%/static/favicon-32x32.png" sizes="32x32">
-    <link rel="icon" type="image/png" href="%PUBLIC_URL%/static/favicon-96x96.png" sizes="96x96">
-    <link rel="icon" type="image/png" href="%PUBLIC_URL%/static/favicon-16x16.png" sizes="16x16">
+    <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/static/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="%PUBLIC_URL%/static/favicons/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="%PUBLIC_URL%/static/favicons/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
+    <link rel="mask-icon" href="%PUBLIC_URL%/static/favicons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="%PUBLIC_URL%/static/favicons/favicon.ico">
+    <meta name="apple-mobile-web-app-title" content="Podcast Time">
+    <meta name="application-name" content="Podcast Time">
+    <meta name="msapplication-config" content="%PUBLIC_URL%/static/favicons/browserconfig.xml">
+    <meta name="theme-color" content="#2B3E50">
+
     <title>Podcast Time - How Much Time Do Your Podcasts Take To Listen To?</title>
     <link rel="stylesheet" href="%PUBLIC_URL%/static/bootstrap.min.css">
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      if ('%NODE_ENV%' !== 'development' && 'serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/service-worker.js');
+        });
+      }
+    </script>
   </body>
 </html>
