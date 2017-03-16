@@ -22,10 +22,101 @@
     <meta name="theme-color" content="#2B3E50">
 
     <title>Podcast Time - How Much Time Do Your Podcasts Take To Listen To?</title>
+    <style>
+    *, *::before, *::after {
+      -webkit-box-sizing: inherit;
+      box-sizing: inherit;
+    }
+    body {
+      /*font-family: Lato, Helvetica, Arial, sans-serif;*/
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 1rem;
+      font-weight: normal;
+      line-height: 1.5;
+      color: #EBEBEB;
+      background-color: #2B3E50;
+    }
+
+    body.font-loaded {
+      font-family: Lato, Helvetica, Arial, sans-serif;
+    }
+
+
+    /* copied from bootstrap.min.css */
+    .container{position:relative;margin-left:auto;margin-right:auto;padding-right:15px;padding-left:15px}
+    @media (min-width: 576px){.container{padding-right:15px;padding-left:15px}}
+    @media (min-width: 768px){.container{padding-right:15px;padding-left:15px}}
+    @media (min-width: 992px){.container{padding-right:15px;padding-left:15px}}
+    @media (min-width: 1200px){.container{padding-right:15px;padding-left:15px}}
+    @media (min-width: 576px){.container{width:540px;max-width:100%}}
+    @media (min-width: 768px){.container{width:720px;max-width:100%}}
+    @media (min-width: 992px){.container{width:960px;max-width:100%}}
+    @media (min-width: 1200px){.container{width:1140px;max-width:100%}}
+
+    a {
+      color: #DF691A;
+      text-decoration: none;
+    }
+    h1, .h1 {
+      font-size: 2.5rem;
+    }
+    h4 {
+      font-size:1.5rem;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 0;
+      margin-bottom: .5rem;
+      margin-bottom: 0.5rem;
+      font-family: inherit;
+      font-weight: 500;
+      line-height: 1.1;
+      color: inherit;
+    }
+    .sub-header {
+      font-size: .9rem;
+    }
+
+    /* https://www.kevinleary.net/pulsating-css3-animations/ */
+    .pulsate {
+        -webkit-animation: pulsate 1s ease-out;
+        -webkit-animation-iteration-count: infinite;
+        opacity: 0.3;
+    }
+    @-webkit-keyframes pulsate {
+        0% {
+            opacity: 0.3;
+        }
+        50% {
+            opacity: 1.0;
+        }
+        100% {
+            opacity: 0.3;
+        }
+    }
+    </style>
+    <link rel="stylesheet" href="%PUBLIC_URL%/static/google-fonts.css">
     <link rel="stylesheet" href="%PUBLIC_URL%/static/bootstrap.min.css">
+
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="container">
+        <div class="mt-1">
+          <h1><a href="/">Podcast Time</a></h1>
+          <h5 class="sub-header">How Much Time Do <i>Your</i> Podcasts Take To Listen To?</h5>
+        </div>
+        <div style="margin-top:100px;text-align:center">
+          <h4 class="pulsate">Loading...</h4>
+        </div>
+      </div>
+    </div>
+
+    <script>
+    /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+    !function(a){"use strict";var b=function(b,c,d){function e(a){return h.body?a():void setTimeout(function(){e(a)})}function f(){i.addEventListener&&i.removeEventListener("load",f),i.media=d||"all"}var g,h=a.document,i=h.createElement("link");if(c)g=c;else{var j=(h.body||h.getElementsByTagName("head")[0]).childNodes;g=j[j.length-1]}var k=h.styleSheets;i.rel="stylesheet",i.href=b,i.media="only x",e(function(){g.parentNode.insertBefore(i,c?g:g.nextSibling)});var l=function(a){for(var b=i.href,c=k.length;c--;)if(k[c].href===b)return a();setTimeout(function(){l(a)})};return i.addEventListener&&i.addEventListener("load",f),i.onloadcssdefined=l,l(f),i};"undefined"!=typeof exports?exports.loadCSS=b:a.loadCSS=b}("undefined"!=typeof global?global:this);
+    /*! loadCSS rel=preload polyfill. [c]2017 Filament Group, Inc. MIT License */
+    !function(a){if(a.loadCSS){var b=loadCSS.relpreload={};if(b.support=function(){try{return a.document.createElement("link").relList.supports("preload")}catch(b){return!1}},b.poly=function(){for(var b=a.document.getElementsByTagName("link"),c=0;c<b.length;c++){var d=b[c];"preload"===d.rel&&"style"===d.getAttribute("as")&&(a.loadCSS(d.href,d,d.getAttribute("media")),d.rel=null)}},!b.support()){b.poly();var c=a.setInterval(b.poly,300);a.addEventListener&&a.addEventListener("load",function(){b.poly(),a.clearInterval(c)}),a.attachEvent&&a.attachEvent("onload",function(){a.clearInterval(c)})}}}(this);
+    </script>
     <script>
       if ('%NODE_ENV%' !== 'development' && 'serviceWorker' in navigator) {
         window.addEventListener('load', function() {

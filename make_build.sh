@@ -9,4 +9,5 @@ popd
 
 #PUBLIC_URL="https://podcasttime-2916.kxcdn.com" yarn run build
 yarn run build
+./post-build.py build
 apack build.zip build

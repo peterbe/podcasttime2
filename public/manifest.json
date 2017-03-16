@@ -1,5 +1,6 @@
 {
   "name": "Podcast Time",
+  "short_name": "Podcast Time",
   "icons": [{
       "src": "/static/favicons/android-chrome-192x192.png",
       "sizes": "192x192",
