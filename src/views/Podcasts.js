@@ -174,7 +174,7 @@ class PodcastCard extends Component {
           <img
             src={podcast.thumbnail_348 ? podcast.thumbnail_348 : '/static/images/no-image.png'}
             className="card-img-top"
-            role="presentation"/>
+            alt="card"/>
        </InterceptableLink>
         <div className="card-block">
           <h4 className="card-title">

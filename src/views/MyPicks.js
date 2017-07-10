@@ -143,7 +143,7 @@ const Podcast = ({podcast, store}) => {
         <img
           className="figure-img img-fluid rounded"
           src={podcast.thumbnail_160 ? podcast.thumbnail_160 : '/static/podcasttime/images/no-image.png'}
-          role="presentation"
+          alt=""
           style={{width: 100}}/>
       </Link>
     </figure>

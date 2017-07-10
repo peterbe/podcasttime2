@@ -118,7 +118,11 @@ export const Pagination = ({
   } else {
     nextLink = (
       <li className="page-item disabled">
-        <a className="page-link" href="#" tabIndex={-1}>Page{' '}{pagination.num_pages}</a>
+        <a
+          className="page-link"
+          href={pagination.num_pages}
+          tabIndex={-1}
+          >Page{' '}{pagination.num_pages}</a>
       </li>
     )
   }
@@ -145,7 +149,7 @@ export const Pagination = ({
   } else {
     prevLink = (
       <li className="page-item disabled">
-        <a className="page-link" href="#" tabIndex={-1}>Page 1</a>
+        <a className="page-link" href="" tabIndex={-1}>Page 1</a>
       </li>
     )
   }
@@ -155,7 +159,10 @@ export const Pagination = ({
       <ul className="pagination justify-content-center pagination-lg">
         { prevLink }
         <li className="page-item disabled">
-          <a className="page-link" href="#">{current(pagination.number, pagination.num_pages)}</a>
+          <a
+            className="page-link"
+            href={pagination.number}
+            >{current(pagination.number, pagination.num_pages)}</a>
         </li>
         { nextLink }
       </ul>

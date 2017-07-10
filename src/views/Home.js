@@ -6,6 +6,7 @@ import './Home.css'
 import magnify from './magnify.svg'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import loadJS from 'loadjs'
+import { throttle } from 'throttle-debounce'
 import { ShowServerResponseError, InterceptableLink } from './Common'
 
 
@@ -14,11 +15,15 @@ class Home extends Component {
   constructor(props) {
     super(props)
     this.onSubmit = this.onSubmit.bind(this)
-    this.onChangeSearch = this.onChangeSearch.bind(this)
     this.onPickPodcast = this.onPickPodcast.bind(this)
     this.onRemovePodcast = this.onRemovePodcast.bind(this)
     this.onRemoveAll = this.onRemoveAll.bind(this)
     this.onKeyDownSearch = this.onKeyDownSearch.bind(this)
+
+    this._fetchFromAutocompleteThrottled = throttle(
+      1000,
+      this._fetchFromAutocomplete
+    )
   }
 
   onSubmit(event) {
@@ -125,7 +130,7 @@ class Home extends Component {
     )
   }
 
-  onChangeSearch(event) {
+  onChangeSearch = (event) => {
     let { store } = this.props
     const search = event.target.value
     store.app.search = search
@@ -134,45 +139,47 @@ class Home extends Component {
       store.app.searchResults = null
       store.app.searchHighlight = -1
     } else {
-      if (this._findDebounce) {
-        clearTimeout(this._findDebounce)
+      if (search.length > 2) {
+        this._fetchFromAutocompleteThrottled(store, search)
+      } else {
+        this._fetchFromAutocomplete(store, search)
       }
-      this._findDebounce = setTimeout(() => {
-        let url = `/api/podcasttime/find?q=${search}`
-        store.app.isSearching = true
-        fetch(url, {
-          credentials: 'include',  // XXX WHY DO I HAVE THIS?
-        })
-        .then(r => {
-          if (r.status !== 200) {
-            store.app.serverResponseError = r
-            store.app.isSearching = false
-          } else {
-            return r.json()
-          }
-        })
-        .then(results => {
-          if (results) {
-            store.app.isSearching = false
-            // perhaps the user has quickly changed their mind
-            if (store.app.search) {
-              if (store.app.search === results.q) {
-                const ids = store.app.picked.map(p => p.id)
-                store.app.searchResults = results.items.filter(item => {
-                  return !ids.includes(item.id)
-                })
-                store.app.searchResultsTotal = results.total
-              }
-              this._lookforPendingResults(results)
-            } else if (store.app.searchResults && store.app.searchResults.length) {
-              store.app.searchResults = null
-              store.app.searchResultsTotal = null
-              store.app.searchHighlight = -1
-            }
-          }
-        })
-      }, 200)
     }
+  }
+
+  _fetchFromAutocomplete = (store, search) => {
+    let url = `/api/podcasttime/find?q=${search}`
+    store.app.isSearching = true
+    return fetch(url, {
+      credentials: 'include',  // XXX WHY DO I HAVE THIS?
+    })
+    .then(r => {
+      if (r.status !== 200) {
+        store.app.serverResponseError = r
+        store.app.isSearching = false
+      } else {
+        return r.json()
+        .then(results => {
+          store.app.isSearching = false
+          // perhaps the user has quickly changed their mind
+          if (store.app.search) {
+            if (store.app.search === results.q) {
+              const ids = store.app.picked.map(p => p.id)
+              store.app.searchResults = results.items.filter(item => {
+                return !ids.includes(item.id)
+              })
+              store.app.searchResultsTotal = results.total
+            }
+            this._lookforPendingResults(results)
+          } else if (store.app.searchResults && store.app.searchResults.length) {
+            store.app.searchResults = null
+            store.app.searchResultsTotal = null
+            store.app.searchHighlight = -1
+          }
+          return results
+        })
+      }
+    })
   }
 
   _lookforPendingResults(results) {
@@ -290,9 +297,6 @@ class Home extends Component {
       if (highlight > -1) {
         this.onPickPodcast(event, suggestions[highlight])
       } else if (store.app.search) {
-        if (this._findDebounce) {
-          clearTimeout(this._findDebounce)
-        }
         // nothing could be autocompleted, the form tried to submit
         let url = `/api/podcasttime/find?q=${store.app.search}&submitted=true`
         store.app.isSearching = true
@@ -303,24 +307,22 @@ class Home extends Component {
             store.app.isSearching = false
           } else {
             return r.json()
-          }
-        })
-        .then(results => {
-          if (results) {
-            store.app.isSearching = false
-            if (store.app.search) {
-              const ids = store.app.picked.map(p => p.id)
-              store.app.searchResults = results.items.filter(item => {
-                return !ids.includes(item.id)
-              })
-              store.app.searchResultsTotal = results.total
+            .then(results => {
+              store.app.isSearching = false
+              if (store.app.search) {
+                const ids = store.app.picked.map(p => p.id)
+                store.app.searchResults = results.items.filter(item => {
+                  return !ids.includes(item.id)
+                })
+                store.app.searchResultsTotal = results.total
 
-              this._lookforPendingResults(results)
+                this._lookforPendingResults(results)
 
-            } else if (store.app.searchResults && store.app.searchResults.length) {
-              store.app.searchResults = null
-              store.app.searchHighlight = -1
-            }
+              } else if (store.app.searchResults && store.app.searchResults.length) {
+                store.app.searchResults = null
+                store.app.searchHighlight = -1
+              }
+            })
           }
         })
       }
@@ -779,7 +781,7 @@ const Podcast = ({ podcast, onRemovePodcast, store }) => {
               store.app.podcast = podcast
             }}
           >
-            <img src={imageURL} role="presentation" className="rounded"/>
+            <img src={imageURL} alt="thumbnail" className="rounded"/>
           </InterceptableLink>
         </div>
         <div className="meta">

@@ -159,7 +159,7 @@ const Metadata = ({ podcast }) => {
         <div className="image col-4">
           <img
             className="img-thumbnail"
-            role="presentation"
+            alt="thumbnail"
             style={{float: 'left'}}
             src={podcast.thumbnail_348 ? podcast.thumbnail_348 : process.env.PUBLIC_URL + '/static/images/no-image.png'}/>
         </div>

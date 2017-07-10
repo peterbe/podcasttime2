@@ -10,13 +10,14 @@ import './index.css';
 import {Provider} from 'mobx-react'
 import store from './store'
 
+// side components
+import PersistentPicks from './views/PersistentPicks'
+
 
 // router
 import views from './views'
 startRouter(views, store)
 
-// side components
-import PersistentPicks from './views/PersistentPicks'
 
 
 ReactDOM.render(
