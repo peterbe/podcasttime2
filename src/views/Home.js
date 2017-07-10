@@ -14,19 +14,13 @@ class Home extends Component {
 
   constructor(props) {
     super(props)
-    this.onSubmit = this.onSubmit.bind(this)
-    this.onPickPodcast = this.onPickPodcast.bind(this)
-    this.onRemovePodcast = this.onRemovePodcast.bind(this)
-    this.onRemoveAll = this.onRemoveAll.bind(this)
-    this.onKeyDownSearch = this.onKeyDownSearch.bind(this)
-
     this._fetchFromAutocompleteThrottled = throttle(
       1000,
       this._fetchFromAutocomplete
     )
   }
 
-  onSubmit(event) {
+  onSubmit = (event) => {
     event.preventDefault()
     let search = this.props.store.app.search
     this.props.store.router.goTo(
@@ -91,7 +85,7 @@ class Home extends Component {
     })
   }
 
-  onRemovePodcast(event, podcast) {
+  onRemovePodcast = (event, podcast) => {
     event.preventDefault()
     let podcasts = this.props.store.app.picked.filter(p => {
       return p.id !== podcast.id
@@ -117,7 +111,7 @@ class Home extends Component {
     }
   }
 
-  onRemoveAll(event) {
+  onRemoveAll = (event) => {
     event.preventDefault()
     this.props.store.app.picked = []
     this.props.store.app.pickedStats = null
@@ -277,7 +271,7 @@ class Home extends Component {
     }
   }
 
-  onKeyDownSearch(event) {
+  onKeyDownSearch = (event) => {
     const { store } = this.props
     let suggestions = store.app.searchResults
     let highlight = store.app.searchHighlight
@@ -329,7 +323,7 @@ class Home extends Component {
     }
   }
 
-  onPickPodcast(event, podcast) {
+  onPickPodcast = (event, podcast) => {
     const { store } = this.props
     event.preventDefault()
     if (!store.app.picked.length) {

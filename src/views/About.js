@@ -1,23 +1,10 @@
 import React, {Component} from 'react';
 import {observer,inject} from 'mobx-react';
-// import {Link} from 'mobx-router';
-// import views from '../views';
-// import {
-//   RippleCentered,
-//   FormattedDuration,
-//  } from './Common'
 import {
-  // FormattedRelative,
-  // FormattedDate,
   FormattedNumber,
 } from 'react-intl'
-// import './Podcast.css'
 
 class About extends Component {
-  // constructor(props) {
-  //   super(props)
-  //   // this.onAddThis = this.onAddThis.bind(this)
-  // }
 
   render() {
 

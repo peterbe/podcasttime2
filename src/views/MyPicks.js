@@ -7,13 +7,7 @@ import views from '../views'
 
 class MyPicks extends Component {
 
-  constructor(props) {
-    super(props)
-    this.loadList = this.loadList.bind(this)
-    this.removeList = this.removeList.bind(this)
-  }
-
-  loadList(event, group) {
+  loadList = (event, group) => {
     event.preventDefault()
     sessionStorage.setItem('picks', group.key)
     const { store } = this.props
@@ -25,7 +19,7 @@ class MyPicks extends Component {
     )
   }
 
-  removeList(event, group) {
+  removeList = (event, group) => {
     event.preventDefault()
     if (sessionStorage.getItem('picks') === group.key) {
       sessionStorage.removeItem('picks')

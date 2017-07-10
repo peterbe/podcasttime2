@@ -95,12 +95,7 @@ export default inject('store',)(observer(Podcasts))
 
 class SearchForm extends Component {
 
-  constructor(props) {
-    super(props)
-    this.onSubmit = this.onSubmit.bind(this)
-  }
-
-  onSubmit(event) {
+  onSubmit = (event) => {
     event.preventDefault()
     let search = this.refs.q.value.trim()
     this.props.store.router.goTo(
@@ -137,12 +132,7 @@ class SearchForm extends Component {
 
 class PodcastCard extends Component {
 
-  constructor(props) {
-    super(props)
-    this.onAddThis = this.onAddThis.bind(this)
-  }
-
-  onAddThis(event) {
+  onAddThis = (event) => {
     event.preventDefault()
     const { store, podcast } = this.props
     let ids = store.app.picked.map(p => p.id)

@@ -15,12 +15,8 @@ import {
 import './Podcast.css'
 
 class Podcast extends Component {
-  constructor(props) {
-    super(props)
-    this.onAddThis = this.onAddThis.bind(this)
-  }
 
-  onAddThis(event) {
+  onAddThis = (event) => {
     event.preventDefault()
     const { store } = this.props
     let ids = store.app.picked.map(p => p.id)
